@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Kumsal Macerası - Gece Modu</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f48c25",
+                        "background-dark": "#0a0a0f",
+                        "ui-brown": "#3d2b1f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'game': '0 8px 0 rgba(0,0,0,0.3)',
+                        'glow-teal': '0 0 20px rgba(45, 212, 191, 0.6)',
+                        'glow-orange': '0 0 25px rgba(244, 140, 37, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            overscroll-behavior: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            min-height: max(884px, 100dvh);
+        }
+        .text-outline {
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+        }
+        .bg-night-beach {
+            background: linear-gradient(to bottom, #050510 0%, #0a0a20 40%, #152035 100%);
+        }
+        .glow-shell {
+            filter: drop-shadow(0 0 8px rgba(254, 240, 138, 0.8));
+        }
+    </style>
+</head>
+<body class="bg-black w-screen h-screen overflow-hidden font-display flex items-center justify-center">
+<!-- Main Game Container (Landscape Phone Simulation) -->
+<div class="relative w-full h-full max-w-[926px] max-h-[428px] md:aspect-[21/9] bg-night-beach overflow-hidden shadow-2xl mx-auto">
+<!-- 1. Background Layer: Night Sky -->
+<div class="absolute inset-0 z-0">
+<!-- Moon -->
+<div class="absolute top-6 right-16 w-16 h-16 bg-blue-50 rounded-full blur-[2px] opacity-90 shadow-[0_0_50px_rgba(255,255,255,0.4)]"></div>
+<!-- Stars -->
+<div class="absolute inset-0 opacity-40" style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 50px 50px;"></div>
+<!-- Distant Clouds (Darker) -->
+<img alt="Clouds" class="absolute top-10 left-1/4 w-48 h-auto opacity-20 mix-blend-screen object-contain grayscale invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-xlJ_NNuMW7HUNKqDhMIoYL6YKejAdD1UvEkexR_h8StEXmow8-kcBvwCapWH-VN-Ibbr3Lf40TrIUbXqC6SPv0Ld5843-OsLzpEfK1km8YesFeWX_9CNu7RY3mXCS4Hs77Iaa9lSYqujm9QeW00R8eS72AbBasnaXD95neceACAwdSyQUenOzhKmY_Gxs_sdXT5CZSAsHTL9O5YMOBgrUZbTv0cl-ScMGyfOjEKrq1bMmSflzhqA-Sz5e118f7kfV27uFk_r8mk"/>
+</div>
+<!-- 2. Midground Layer: Ocean at Night -->
+<div class="absolute bottom-0 w-full h-2/3 z-0">
+<!-- Ocean Surface -->
+<div class="absolute bottom-0 w-full h-full bg-gradient-to-t from-blue-950 via-blue-900 to-transparent opacity-60"></div>
+<!-- Distant Islands (Silhouettes) -->
+<div class="absolute bottom-24 left-0 w-full h-32 bg-contain bg-repeat-x opacity-20 grayscale brightness-50" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcVAyrkhREOXi77gdSsrmFJqAcRM3tmAHK6lobCJ32hM2pY-LwUZlgqwjVnOXv9sIy26tns-etWf1ADF3yjqGrwkz1Ck6P-h75wJQWy7ZQidnnAo8kl_mhXO9dvUqIZfdnDzRyrLnBFiijAd9doVoiuv317EebKA7Fgb18ZyYoIb_IX3S_nIS5IhDQ4EeVFkM6QOod2SQ83qZTZ_KiAp6XIbv-7W_GHkJTl36AAGEQOw9i-esIzg7YSAp4fJWQ5QeD_nIaClTR6pE');">
+</div>
+</div>
+<!-- 3. Playground Layer: Dark Sand & Palms -->
+<div class="absolute bottom-0 w-full h-32 z-10">
+<!-- Dark Sand Dunes -->
+<div class="absolute bottom-0 w-full h-24 bg-[#1a1510] border-t-4 border-[#2d241c]">
+<div class="w-full h-full opacity-10" style="background-image: radial-gradient(#4b3c2e 1px, transparent 1px); background-size: 8px 8px;"></div>
+</div>
+<!-- Elevated Dark Platform -->
+<div class="absolute bottom-24 left-1/3 w-64 h-12 bg-[#2d1b2e] rounded-xl border-t-4 border-[#3d263f] shadow-lg flex items-center justify-center">
+<div class="w-full h-full opacity-20" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCYfWf7IQYfT5gztaHgmegTpRcLl91mXcAu-Bv1sGw23yDvXYa3PedAeIJ2gH4mrXeoWL2quRJniWI-EZvXwkdU8yGWtorq_-kbG0VN3HiaFQF5QD0r6PO0uqxF7N7mdfJLz2F3Hd6ZQ1qwCCk8S5ruSgWegIMvnKdNySqGigpbsBO_GevoP3p_gzqu1oxvUf366GxzPp_sw6FM_DO1Wlg7Bkw4_Uldh_Dt7dBz5OIQBOil365z9zeSGHfBAHc7-lXeDBFniyWCFVE'); background-size: cover;"></div>
+</div>
+<!-- Dark Palm Tree (Left) -->
+<div class="absolute bottom-20 left-4 w-48 h-64 z-0 origin-bottom-center -rotate-6 opacity-40">
+<div class="w-full h-full relative">
+<span class="material-icons-round text-[#100c08] text-9xl absolute bottom-0 left-8 transform scale-y-150">park</span>
+<span class="material-symbols-outlined text-[#0a1f0a] text-8xl absolute top-4 left-0 rotate-45" style="font-variation-settings: 'FILL' 1">eco</span>
+<span class="material-symbols-outlined text-[#0a1f0a] text-8xl absolute top-0 left-8 -rotate-12" style="font-variation-settings: 'FILL' 1">eco</span>
+</div>
+</div>
+</div>
+<!-- 4. Game Entities -->
+<div class="absolute inset-0 z-10 pointer-events-none">
+<!-- Character: Updated to match IMAGE_5 -->
+<div class="absolute bottom-24 left-24 w-24 h-16 z-20">
+<div class="relative w-full h-full overflow-hidden flex items-end">
+<img alt="Fox Character" class="w-full h-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]" src="https://lh3.googleusercontent.com/aida/ADBb0ujiNE861SPRsARarD3rLD65EOpPqZvJaaOo4i6OimPog22p2IFvpoAX6y53ltes1zYDGyPbtIMRF_3p6eVSv85mQnlO-ZtfRNYg4lw-DV9P3HOAPtwVBO-MgNSsmeiU6Cmw_4jtlfTqArTvvHGVoKpdlqT5sxLqHG43ZAhACcWK7zsKN-D4S1pQLFRWGhhsaDP7HPTxF7O0LsAKphvK-vK03ciunW9ax8OUB_WyUve_4-a223g_7I6v5ZCf0f-g6AN1JyXroFjrxg"/>
+</div>
+</div>
+<!-- Enemy: Crab (Dark red glow) -->
+<div class="absolute bottom-24 left-[60%] w-12 h-10">
+<div class="w-full h-full bg-red-900 rounded-full border-2 border-red-950 shadow-[0_0_15px_rgba(220,38,38,0.4)] flex items-center justify-center relative">
+<span class="material-icons-round text-red-500 text-3xl opacity-80">bug_report</span>
+<div class="absolute -top-1 flex space-x-2">
+<div class="w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
+<div class="w-1 h-1 bg-red-500 rounded-full animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Glowing Shell Collectible -->
+<div class="absolute bottom-28 left-[40%] w-10 h-10">
+<div class="w-full h-full flex items-center justify-center glow-shell">
+<span class="material-symbols-outlined text-yellow-200 text-3xl" style="font-variation-settings: 'FILL' 1">spa</span>
+</div>
+</div>
+<!-- Glowing Pearl (High Jump) -->
+<div class="absolute bottom-[220px] left-[50%] w-10 h-10">
+<div class="w-full h-full rounded-full bg-blue-100/20 backdrop-blur-sm border-2 border-blue-200/50 shadow-[0_0_20px_rgba(191,219,254,0.8)] flex items-center justify-center">
+<div class="w-4 h-4 bg-white rounded-full blur-[1px]"></div>
+</div>
+</div>
+</div>
+<!-- 5. UI HUD Layer -->
+<div class="absolute inset-0 z-50 pointer-events-none p-4 md:p-6">
+<!-- Top Layout -->
+<div class="flex items-start justify-between w-full">
+<!-- Left: Counters -->
+<div class="flex flex-col space-y-2 pointer-events-auto">
+<!-- Shell Counter -->
+<div class="bg-ui-brown/80 backdrop-blur-md rounded-full border border-yellow-900/50 px-4 py-2 flex items-center space-x-3 shadow-lg">
+<div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-400 text-xl" style="font-variation-settings: 'FILL' 1">spa</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-yellow-200/60 font-bold uppercase tracking-widest leading-none">KABUK</span>
+<span class="text-lg font-black text-white leading-tight">8<span class="text-white/40 font-normal">/20</span></span>
+</div>
+</div>
+<!-- Score Counter -->
+<div class="bg-ui-brown/80 backdrop-blur-md rounded-full border border-yellow-900/50 px-4 py-2 flex items-center space-x-3 shadow-lg">
+<div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-500 text-xl" style="font-variation-settings: 'FILL' 1">stars</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-yellow-200/60 font-bold uppercase tracking-widest leading-none">PUAN</span>
+<span class="text-lg font-black text-white leading-tight">1250</span>
+</div>
+</div>
+</div>
+<!-- Center: Level Name -->
+<div class="mt-2">
+<h2 class="text-white text-xs md:text-sm font-bold tracking-[0.2em] uppercase opacity-80 text-center">Bölüm 2: Kumsal Macerası</h2>
+</div>
+<!-- Right: Lives & Pause -->
+<div class="flex flex-col items-end space-y-4">
+<button class="pointer-events-auto w-10 h-10 bg-black/60 rounded-full border border-white/10 flex items-center justify-center backdrop-blur-sm active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white">pause</span>
+</button>
+<!-- Hearts -->
+<div class="bg-black/40 backdrop-blur-md rounded-full px-3 py-2 border border-white/5 flex items-center space-x-1 shadow-inner">
+<span class="material-symbols-outlined text-red-500 text-2xl" style="font-variation-settings: 'FILL' 1">favorite</span>
+<span class="material-symbols-outlined text-red-500 text-2xl" style="font-variation-settings: 'FILL' 1">favorite</span>
+<span class="material-symbols-outlined text-red-500 text-2xl" style="font-variation-settings: 'FILL' 1">favorite</span>
+</div>
+</div>
+</div>
+<!-- Bottom Layout: Jump Button -->
+<div class="absolute bottom-4 right-4 md:bottom-8 md:right-8">
+<button class="pointer-events-auto group relative w-24 h-24 md:w-28 md:h-28 bg-gradient-to-b from-primary to-orange-600 rounded-full shadow-game border-b-4 border-orange-800 flex flex-col items-center justify-center active:translate-y-1 active:border-b-0 transition-all">
+<!-- Glow -->
+<div class="absolute inset-0 rounded-full shadow-glow-orange animate-pulse opacity-50"></div>
+<!-- Icon -->
+<span class="material-symbols-outlined text-white text-4xl md:text-5xl font-black mb-1 group-active:scale-90 transition-transform">keyboard_double_arrow_up</span>
+<span class="text-white font-black text-xs uppercase tracking-[0.15em] text-outline">Zıpla</span>
+</button>
+</div>
+<!-- Left Side Back Button -->
+<div class="absolute bottom-4 left-4 md:bottom-8 md:left-8">
+<button class="pointer-events-auto w-12 h-12 bg-black/40 rounded-full border border-white/10 flex items-center justify-center backdrop-blur-sm active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white">arrow_back</span>
+</button>
+</div>
+</div>
+<!-- Atmospheric Vignette -->
+<div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,0.6)] z-40"></div>
+</div>
+</body></html>

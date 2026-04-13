@@ -1,0 +1,113 @@
+# TEKNİK DOKÜMAN: Ayarlar ve Ödül Ekranları
+
+Bu doküman, "Macera Ormanı / Wildwood Adventure" oyununun Ayarlar (Settings) ve Ödül (Reward/Victory) ekranlarının teknik detaylarını, tasarım standartlarını ve kod yapılarını içerir.
+
+---
+
+## 1. AYARLAR EKRANI (SETTINGS SCREEN)
+
+### A. Tasarım Planı
+- **Arka Plan:** Koyu zümrüt yeşili, hafif bulanık orman manzarası.
+- **Panel:** "Bubble" tarzı, geniş köşeli (3rem+) beyaz veya hafif şeffaf cam panel.
+- **Kontroller:**
+    - **Ses/Müzik:** Büyük, renkli anahtarlar (Switch) ve yaprak şeklinde kaydırıcılar (Slider).
+    - **Ebeveyn Kontrolü:** Kilit simgeli, 4 haneli nümerik giriş alanı.
+- **Navigasyon:** Sağ üstte büyük bir "X" kapatma butonu.
+
+### B. Kod Yapısı (HTML/Tailwind)
+```html
+<div class="settings-modal fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="bg-white rounded-[3rem] w-[90%] max-w-md p-8 shadow-2xl relative border-4 border-emerald-500">
+    <button class="absolute -top-4 -right-4 w-14 h-14 bg-red-500 rounded-full border-b-4 border-red-800 flex items-center justify-center text-white shadow-lg active:translate-y-1 active:shadow-none">
+      <span class="material-icons text-3xl">close</span>
+    </button>
+
+    <h2 class="text-3xl font-black text-emerald-900 text-center mb-8 uppercase italic">Ayarlar</h2>
+
+    <div class="space-y-6">
+      <!-- Müzik Ayarı -->
+      <div class="flex items-center justify-between bg-emerald-50 p-4 rounded-3xl">
+        <div class="flex items-center gap-4 text-emerald-800">
+          <span class="material-icons">music_note</span>
+          <span class="font-bold text-lg">Müzik</span>
+        </div>
+        <input type="checkbox" class="w-16 h-8 bg-emerald-200 rounded-full appearance-none checked:bg-orange-500 relative transition-colors cursor-pointer after:content-[''] after:absolute after:w-6 after:h-6 after:bg-white after:rounded-full after:top-1 after:left-1 checked:after:left-9 after:transition-all">
+      </div>
+
+      <!-- Ses Efektleri -->
+      <div class="flex items-center justify-between bg-emerald-50 p-4 rounded-3xl">
+        <div class="flex items-center gap-4 text-emerald-800">
+          <span class="material-icons">volume_up</span>
+          <span class="font-bold text-lg">Sesler</span>
+        </div>
+        <input type="checkbox" checked class="w-16 h-8 bg-emerald-200 rounded-full appearance-none checked:bg-orange-500 relative transition-colors cursor-pointer after:content-[''] after:absolute after:w-6 after:h-6 after:bg-white after:rounded-full after:top-1 after:left-1 checked:after:left-9 after:transition-all">
+      </div>
+
+      <!-- Ebeveyn Kilidi -->
+      <button class="w-full h-16 bg-emerald-800 rounded-3xl text-white font-bold flex items-center justify-center gap-3 active:scale-95 transition-transform">
+        <span class="material-icons">lock</span>
+        <span>Ebeveyn Kilidi</span>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+## 2. ÖDÜL EKRANI (REWARD/VICTORY SCREEN)
+
+### A. Tasarım Planı
+- **Atmosfer:** Patlayan konfetiler, parlayan yıldızlar ve havaya zıplayan kahraman animasyonu.
+- **Puan Kartı:** Altın sarısı gradyanlı, parlayan bir panel.
+- **Yıldız Sistemi:** 3 adet büyük, 3D görünümlü altın yıldız (Bölüm başarısına göre dolan).
+- **Butonlar:** "Devam Et" (Büyük Turuncu) ve "Tekrar Oyna" (Mavi/Yeşil).
+
+### B. Kod Yapısı (HTML/Tailwind)
+```html
+<div class="victory-screen fixed inset-0 z-[100] bg-emerald-950/90 flex flex-col items-center justify-center p-6 text-white font-['Plus_Jakarta_Sans']">
+  <!-- Yıldızlar -->
+  <div class="flex gap-4 mb-8 scale-125">
+    <span class="material-icons text-7xl text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">star</span>
+    <span class="material-icons text-7xl text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">star</span>
+    <span class="material-icons text-7xl text-white/20">star</span>
+  </div>
+
+  <h1 class="text-5xl font-black italic uppercase tracking-tighter mb-2 text-center leading-none">Harika<br><span class="text-orange-400">İŞ ÇIKARDIN!</span></h1>
+
+  <!-- Puan Paneli -->
+  <div class="w-full max-w-xs bg-white/10 backdrop-blur-xl rounded-[3rem] p-8 border border-white/20 mb-10">
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-white/60 font-bold uppercase tracking-widest text-sm">Bölüm Puanı</span>
+      <span class="text-3xl font-black text-orange-400">1,250</span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-white/60 font-bold uppercase tracking-widest text-sm">Toplam Puan</span>
+      <span class="text-xl font-bold">5,800</span>
+    </div>
+  </div>
+
+  <!-- Aksiyon Butonları -->
+  <div class="w-full max-w-xs space-y-4">
+    <button class="w-full h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-3xl shadow-[0_8px_0_#8C4A00] flex items-center justify-center gap-4 active:translate-y-1 active:shadow-none transition-all">
+      <span class="text-2xl font-black italic uppercase">Devam Et</span>
+      <span class="material-icons text-3xl">play_arrow</span>
+    </button>
+    <button class="w-full h-14 bg-white/10 rounded-2xl font-bold flex items-center justify-center gap-2 active:bg-white/20 transition-colors">
+      <span class="material-icons">refresh</span>
+      <span>Tekrar Oyna</span>
+    </button>
+  </div>
+</div>
+```
+
+---
+
+## 3. MASTER PROMPT (AI ASİSTANI İÇİN)
+
+"Create a pair of high-fidelity mobile game screens: 'Settings' and 'Reward'.
+- **Theme:** 'Wildwood Adventure' forest aesthetic. Use deep emerald greens, bright oranges, and warm whites.
+- **Settings Screen:** A modal window with bubble-styled switches and leaf-shaped sliders. Include a locked 'Parental Control' area.
+- **Reward Screen:** A celebratory full-screen view with 3D gold stars, a score card with glassmorphism, and a large, bouncy 'NEXT' button with a heavy 3D shadow.
+- **Typography:** Plus Jakarta Sans, ExtraBold for headlines.
+- **Standardization:** Maintain the same color hexes (#4CAF50, #FF8C00) and roundness (3rem+) as previous screens."

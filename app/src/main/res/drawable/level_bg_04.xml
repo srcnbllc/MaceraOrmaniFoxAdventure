@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="360"
+    android:viewportHeight="640">
+    <!-- Level 04: Beach Forest -->
+    <path android:fillColor="#05213A" android:pathData="M0,0h360v640h-360z"/>
+    <path android:fillColor="#0D47A1" android:pathData="M0,0h360v330h-360z" android:fillAlpha="0.45"/>
+    <path android:fillColor="#29B6F6" android:pathData="M0,260c70,-30 130,-30 200,0c60,25 110,25 160,0v380h-360z" android:fillAlpha="0.55"/>
+    <path android:fillColor="#FFCC80" android:pathData="M0,420c90,-40 150,-40 240,0c60,26 90,26 120,0v220h-360z" android:fillAlpha="0.95"/>
+    <path android:fillColor="#FFB74D" android:pathData="M0,500c90,-28 150,-28 240,0c60,18 90,18 120,0v140h-360z" android:fillAlpha="0.85"/>
+    <path android:fillColor="#FFF9C4" android:pathData="M265,80a28,28 0 1,0 56,0a28,28 0 1,0 -56,0" android:fillAlpha="0.85"/>
+</vector>

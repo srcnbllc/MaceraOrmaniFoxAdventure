@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="360"
+    android:viewportHeight="640">
+    <!-- Level 08: Crystal Tunnels -->
+    <path android:fillColor="#07061A" android:pathData="M0,0h360v640h-360z"/>
+    <path android:fillColor="#1A1340" android:pathData="M0,0h360v420h-360z" android:fillAlpha="0.85"/>
+    <path android:fillColor="#311B92" android:pathData="M0,260c90,-70 160,-60 240,0c60,45 90,45 120,10v380h-360z" android:fillAlpha="0.85"/>
+    <path android:fillColor="#7E57C2" android:pathData="M40,160l40,-60l40,60l-40,60z" android:fillAlpha="0.55"/>
+    <path android:fillColor="#B39DDB" android:pathData="M260,120l30,-45l30,45l-30,45z" android:fillAlpha="0.45"/>
+    <path android:fillColor="#80DEEA" android:pathData="M160,210l28,-42l28,42l-28,42z" android:fillAlpha="0.35"/>
+</vector>

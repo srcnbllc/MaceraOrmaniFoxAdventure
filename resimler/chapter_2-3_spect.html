@@ -1,0 +1,73 @@
+# TEKNİK KOD DOKÜMANI: Bölüm 2 ve Bölüm 3 (Kumsal & Bulutlar)
+
+Bu doküman, "Macera Ormanı / Wildwood Adventure" oyununun 2. ve 3. bölümlerinin yazılım, tasarım ve AI üretim detaylarını içerir.
+
+---
+
+## 1. BÖLÜM 2: KUMSAL MACERASI (Kumsal & Deniz)
+
+### A. Görsel Varlıklar ve Tema
+- **Arka Plan:** `beach_bg.png` (Paralaks: Turkuaz Deniz, Altın Kum, Palmiyeler).
+- **Karakter:** Tilki (Koşma, Zıplama, Suya Değme animasyonları).
+- **Toplanabilir Öğeler:** `seashell_pink.png` (Deniz Kabuğu), `pearl_glow.png` (İnci).
+- **Engeller:** `crab_enemy.png` (Yengeç), `wave_hazard.png` (Dalga).
+
+### B. Teknik Kod Yapısı (HTML/JS Spec)
+```javascript
+const Level2Config = {
+  theme: 'beach',
+  gravity: 0.7,
+  jumpForce: 14,
+  hazards: ['crab', 'wave'],
+  collectibles: { shell: 50, pearl: 200 }
+};
+
+// Dalga Mekaniği: Belirli aralıklarla kumsala vuran dalga
+function spawnWave() {
+  if (Math.random() < 0.01) {
+    const wave = createEntity('wave', screenWidth, groundLevel);
+    wave.velocity = -5; // Sola doğru hareket
+  }
+}
+```
+
+---
+
+## 2. BÖLÜM 3: BULUTLAR ARASI (Gökyüzü & Platform)
+
+### A. Görsel Varlıklar ve Tema
+- **Arka Plan:** `sky_bg.png` (Paralaks: Mavi Gökyüzü, Hareketli Bulutlar, Yıldızlar).
+- **Karakter:** Tilki (Çift Zıplama özelliği aktif).
+- **Toplanabilir Öğeler:** `magic_feather.png` (Sihirli Tüy), `star_dust.png` (Yıldız Tozu).
+- **Engeller:** `bird_enemy.png` (Kuş), `storm_cloud.png` (Şimşekli Bulut).
+
+### B. Teknik Kod Yapısı (HTML/JS Spec)
+```javascript
+const Level3Config = {
+  theme: 'sky',
+  gravity: 0.5, // Düşük yerçekimi
+  jumpForce: 12,
+  doubleJump: true, // Çift zıplama aktif
+  hazards: ['bird', 'lightning'],
+  collectibles: { feather: 100, star: 500 }
+};
+
+// Hareketli Platform Mekaniği
+function updatePlatforms() {
+  platforms.forEach(p => {
+    p.x += Math.sin(Date.now() / 1000) * p.amplitude;
+  });
+}
+```
+
+---
+
+## 3. MASTER PROMPT (AI ASİSTANI İÇİN)
+
+"Act as a Senior Game Developer. Generate full HTML/CSS/JS code for Level 2 and Level 3 of 'Wildwood Adventure'.
+- **General Logic:** Side-scrolling 2D physics, 3-heart health system, score counter.
+- **Level 2 (Beach):** Implement a wave mechanic where waves move from right to left. Character must jump over crabs and waves. Use a bright yellow/blue color palette.
+- **Level 3 (Sky):** Implement low gravity and double-jump. Platforms must move horizontally. Hazards include birds flying in patterns and lightning clouds.
+- **UI:** Top HUD showing hearts, score, and level name. Large orange 'JUMP' button on bottom right.
+- **Character:** Use the Fox sprite character.
+- **Code Quality:** Modular functions for physics, collision detection, and entity spawning. Use requestAnimationFrame for smooth 60fps."

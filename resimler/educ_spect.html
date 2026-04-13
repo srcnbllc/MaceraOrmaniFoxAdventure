@@ -1,0 +1,80 @@
+# TEKNİK DOKÜMAN: Eğitim ve Giriş Ekranı (Tutorial Screen)
+
+Bu doküman, "Macera Ormanı / Wildwood Adventure" oyununun ikinci adımı olan ve temel mekanikleri (koşma, zıplama, toplama) öğreten etkileşimli eğitim ekranının teknik detaylarını içerir.
+
+---
+
+## 1. TASARIM PLANI: EĞİTİM EKRANI
+
+- **Görsel Dil:** Hoş Geldin ekranındaki derin orman teması devam eder ancak daha aydınlık ve öğretici odaklıdır.
+- **İnteraktif Elemanlar:** 
+    - Ekranda parlayan bir el ve "Zıplamak için Dokun!" gibi yönlendirmeler.
+    - Karakterin (Hızlı Tilki) basit bir engelin üzerinden zıplarken donmuş veya ağır çekimdeki hali.
+- **Navigasyon:** 
+    - Sağ üstte "Atla" (Skip) butonu.
+    - Alt kısımda "Devam Et" (Next) butonu.
+    - İlerleme noktaları (Pagination dots) kaçıncı adımda olduğunu gösterir.
+
+---
+
+## 2. FRONT-END (HTML & CSS) KOD YAPISI
+
+### HTML Şablonu
+```html
+<div id="tutorial-screen" class="relative w-full h-full overflow-hidden bg-emerald-950 font-['Plus_Jakarta_Sans']">
+  <!-- Arka Plan -->
+  <div class="absolute inset-0 bg-[url('forest_tutorial_bg.png')] bg-cover opacity-40 blur-sm"></div>
+
+  <!-- Üst Bar -->
+  <div class="relative z-20 p-6 flex justify-between items-center">
+    <div class="step-indicator flex gap-2">
+      <div class="w-8 h-2 bg-orange-500 rounded-full"></div>
+      <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+      <div class="w-2 h-2 bg-white/30 rounded-full"></div>
+    </div>
+    <button class="text-white/70 font-bold uppercase tracking-widest text-xs">Atla</button>
+  </div>
+
+  <!-- Ana Görsel Alanı (Karakter & Engel) -->
+  <div class="relative z-10 flex flex-col items-center justify-center h-1/2 mt-10">
+    <div class="character-container relative">
+      <img src="fox_jump_pose.png" class="w-48 h-48 drop-shadow-2xl animate-bounce-slow">
+      <!-- Etkileşim İkonu (El) -->
+      <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-orange-500/80 rounded-full flex items-center justify-center animate-ping">
+        <span class="material-icons text-white text-3xl">touch_app</span>
+      </div>
+    </div>
+    <div class="w-full h-4 bg-emerald-800/50 mt-4 rounded-full max-w-[80%]"></div>
+  </div>
+
+  <!-- Bilgi Paneli -->
+  <div class="relative z-20 bg-black/40 backdrop-blur-xl rounded-t-[3rem] p-10 flex flex-col items-center text-center mt-auto h-[40%] border-t border-white/10">
+    <h2 class="text-3xl font-black text-white leading-tight">Zıplamak için<br><span class="text-orange-400 font-black">DOKUN!</span></h2>
+    <p class="text-white/70 mt-4 text-lg font-medium max-w-xs leading-relaxed">
+      Engelleri aşmak için ekrana bas, küçük dostumuzu karşıya geçir!
+    </p>
+
+    <!-- Devam Et Butonu -->
+    <button class="mt-8 w-full h-20 bg-gradient-to-b from-orange-400 to-orange-600 rounded-3xl shadow-[0_8px_0_#8C4A00] flex items-center justify-center gap-4 active:translate-y-1 active:shadow-none transition-all">
+      <span class="text-white text-2xl font-black italic uppercase">Devam Et</span>
+      <span class="material-icons text-white text-3xl">chevron_right</span>
+    </button>
+  </div>
+</div>
+```
+
+---
+
+## 3. MASTER PROMPT (AI ASİSTANI İÇİN)
+
+"Act as a Senior Game UI Designer. Create an interactive 'Tutorial Screen' for 'Macera Ormanı'.
+- **Context:** This screen appears after the Start Screen to teach basic mechanics (jumping over logs).
+- **Design Elements:** 
+    - A blurred, magical forest background.
+    - A central 2D animated Fox character in a 'jump' pose.
+    - A pulsing 'hand icon' (material icon: touch_app) showing where to tap.
+    - A bottom drawer panel (glassmorphism style) with a headline 'TAP to JUMP!' and a large, bubbly orange 'NEXT' button with a heavy 3D shadow.
+- **Animation:** The Fox should have a gentle floating animation, and the button should pulse.
+- **Typography:** Use 'Plus Jakarta Sans', ExtraBold for headlines, Medium for instructions.
+- **Standardization:** Match the color palette (#4CAF50, #FF8C00) and roundness (3rem+) of previous screens.
+- **Code:** Output responsive HTML/CSS with Tailwind. Use CSS animations for the hand icon and character."

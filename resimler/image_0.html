@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Karakter Seçimi - Kahramanını Seç</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f48c25",
+              "primary-hover": "#d97715",
+              "background-light": "#f8f7f5",
+              "background-dark": "#221910",
+              "surface-dark": "#2f241a",
+              "surface-light": "#ffffff",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "1rem", 
+              "lg": "1.5rem", 
+              "xl": "2rem", 
+              "2xl": "2.5rem",
+              "3xl": "3rem",
+              "full": "9999px"
+            },
+            boxShadow: {
+              'glow': '0 0 25px -5px rgba(244, 140, 37, 0.6)',
+              'glow-hover': '0 0 35px -5px rgba(244, 140, 37, 0.8)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display flex flex-col items-center justify-between text-[#231a10] dark:text-white overflow-x-hidden selection:bg-primary selection:text-white">
+<!-- Top App Bar -->
+<header class="w-full max-w-md px-4 pt-6 pb-2 flex items-center justify-between z-10">
+<button class="flex items-center justify-center w-12 h-12 rounded-full bg-surface-dark/50 dark:bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm text-white border border-white/5">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-center flex-1 text-slate-800 dark:text-white drop-shadow-md">
+            Kahramanını Seç
+        </h1>
+<div class="w-12 h-12"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content: Character Spotlight -->
+<main class="flex-1 w-full max-w-md flex flex-col items-center justify-center relative px-4 py-2">
+<!-- Ambient Background Glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+<!-- Character Card -->
+<div class="relative w-full aspect-[4/5] max-h-[420px] rounded-3xl overflow-hidden shadow-glow transition-all duration-300 transform group hover:scale-[1.02] border-4 border-primary">
+<!-- Character Image -->
+<div class="w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-110" data-alt="Orange cute animated fox standing in a magical forest with sparkles" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuANQb_X75_vK5ui3yFH92CXQRxYDxpnLMHWviETufbbCnvzxGc_zWznIhW6gQakL4srd28gStbwi7b4DmAHxeTDP-5pSR0GKokpt5eGNe-_qdoOOFcgPR0B7uWaYSkpyEE9GwboZ6cgemudPNmDcFYDTmxWlfu8r0dca0mzXxoLE9kvr75v7VNWRvzEKqDSCU0m4sNylU2-6JmSAerRNEdA9g7UGfNz1IKP6-r_0uG-t32dAsEe4FVImYZ7UWyVXKozCU1mZ3C8kk0");'>
+<!-- Gradient Overlay for Text Readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+</div>
+<!-- Floating Badge: Trait -->
+<div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-4 py-1.5 flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-yellow-300 text-lg">bolt</span>
+<span class="text-white text-xs font-bold uppercase tracking-wider">Süper Hız</span>
+</div>
+<!-- Character Name & Details Overlay -->
+<div class="absolute bottom-0 left-0 w-full p-6 text-center">
+<h2 class="text-4xl font-black text-white tracking-tight drop-shadow-lg mb-1">Hızlı Tilki</h2>
+<p class="text-primary-100 text-sm font-medium opacity-90 mb-4">Ormanın en kurnaz ve hızlı koşucusu.</p>
+<!-- Stats Bars -->
+<div class="space-y-2 w-full max-w-[200px] mx-auto opacity-90">
+<div class="flex items-center gap-2">
+<span class="text-white text-[10px] font-bold w-8 text-right">HIZ</span>
+<div class="h-2 flex-1 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[95%] rounded-full shadow-[0_0_10px_rgba(244,140,37,0.8)]"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-white text-[10px] font-bold w-8 text-right">GÜÇ</span>
+<div class="h-2 flex-1 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-blue-400 w-[60%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Navigation Arrows (Absolute positioned on the sides of the card) -->
+<button class="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-4xl">chevron_left</span>
+</button>
+<button class="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/50 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-4xl">chevron_right</span>
+</button>
+</main>
+<!-- Character Selector Carousel (Thumbnails) -->
+<section class="w-full max-w-md py-4">
+<div class="flex justify-center items-center gap-3 px-4 overflow-x-auto no-scrollbar pb-2">
+<!-- Active Item (Fox) -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group">
+<div class="w-16 h-16 rounded-2xl border-2 border-primary shadow-[0_0_15px_rgba(244,140,37,0.4)] p-0.5 relative transition-transform transform group-hover:-translate-y-1">
+<div class="w-full h-full rounded-[14px] bg-cover bg-center" data-alt="Thumbnail of orange fox" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXeYAmttzMChvpNzQw14-C5-NDsXbuiKqMfNCQ4egtdDSS3MwDpQmdmevuA-s59WSKAxwKZmEFCITQwWIbjt7fwDUxhIZLrBprTlFzIMOK7TXNTwf1qDKdMQfUZGQ_Er3A7JSqfUWdikZBG_zrwnCM-g0Vxt7s2kSihpr7LzcqxbXn_W1LRWPk-S4AsjubtwJ3IVJHCdYeThHP7jbqOTmreeP002n2lWG8Cb_fWIqwbZtDyspkZ2pq4Oj5w6oUggachj2xatCpGaI");'></div>
+<!-- Selection Indicator Dot -->
+<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<span class="text-primary text-[10px] font-bold">Tilki</span>
+</div>
+<!-- Inactive Item (Bear) -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-14 h-14 rounded-2xl border border-white/10 bg-surface-dark p-0.5 relative transition-transform transform group-hover:-translate-y-1">
+<div class="w-full h-full rounded-[14px] bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" data-alt="Thumbnail of brown bear" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmPnYNVhb8p-vgf6x2y68fEz3A64w9OI9QfFzv8wsBvO84WqMcai2yEoJ5bMlKFV2tz6ube3EilTaD2nPwDAXYTmSphq04Jd1c3bNTin5ZhYa1TyCBiB9I2wmBjPqBSsQrqgmgw7Nl8TIaphnLNdc1E_z7WeoVVtwcDxDKN_X6kvjxnQP4ffCuavVkpsTo2HmguCESbidvE3W3kAIi384LnvR6LglG4PYHjn1nYFjcZCgJe7rjE1MzhTFWeIHV-be7YqYzXRsmxek");'></div>
+</div>
+<span class="text-white/60 text-[10px] font-bold group-hover:text-white">Ayı</span>
+</div>
+<!-- Inactive Item (Rabbit) -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-14 h-14 rounded-2xl border border-white/10 bg-surface-dark p-0.5 relative transition-transform transform group-hover:-translate-y-1">
+<div class="w-full h-full rounded-[14px] bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" data-alt="Thumbnail of white rabbit" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgzkDgUbC6DTggEhi_3km4ygFnbKrKbiY3OzjKXUBCTdmCrCEKgnvIgo2QhKFMz2v2WXp_sKNok0KhV05kFDtl9Fj8KeC6IcdrIkvuIqNi7GqPCN7u_kwvb0A3wNx8uz8OHlte6bbkS17V8j1WRq5xinTy5h4b_bJm0Nge7QyxUshHX_58U3PEwC7CcJIRUPpNARh6sqoDa96Svm2GJczRRnmTl09WbS4n4QDubuL0Fc9oYuLiMg0gnjDIOgRsZv2Dj-x6hUIbfMw");'></div>
+</div>
+<span class="text-white/60 text-[10px] font-bold group-hover:text-white">Tavşan</span>
+</div>
+<!-- Inactive Item (Squirrel) -->
+<div class="flex flex-col items-center gap-2 cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-14 h-14 rounded-2xl border border-white/10 bg-surface-dark p-0.5 relative transition-transform transform group-hover:-translate-y-1">
+<div class="w-full h-full rounded-[14px] bg-cover bg-center grayscale group-hover:grayscale-0 transition-all" data-alt="Thumbnail of red squirrel" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9TYvdEHJQuW_eng-a-VCNY1vD820YXGsOgYPvahP3vYBe7yRU1ZLlx1oqVGTEhrc8M_nPaj_It5aA_E8D-DFqZLESHvEKuJ8RzNVGRtzjlrYM6KPAB96LEzvNXHwKXbssCn0JNa5zU91d4zHlTpGj1IB-YACX-J8FotdD-zvsn-0emmRrlUFc0smnobaNhXDZha3Zc-sXG_h4YRSMaegAPfSpBmI1z8qU_fuuw4F4JfIq-SHGMqJivBfEgIRO6aBbHe8sDrHWZ1M");'></div>
+</div>
+<span class="text-white/60 text-[10px] font-bold group-hover:text-white">Sincap</span>
+</div>
+</div>
+</section>
+<!-- Bottom Action Area -->
+<footer class="w-full max-w-md p-4 pb-8 bg-gradient-to-t from-[#221910] to-transparent">
+<button class="group w-full relative flex items-center justify-center h-16 bg-primary hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 rounded-full shadow-[0_8px_20px_rgba(244,140,37,0.4)] overflow-hidden">
+<!-- Button sheen effect -->
+<div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
+<div class="relative flex items-center gap-3">
+<div class="bg-[#231a10] rounded-full p-1.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">play_arrow</span>
+</div>
+<span class="text-[#231a10] text-lg font-extrabold tracking-wide uppercase">SEÇ VE BAŞLA</span>
+</div>
+</button>
+</footer>
+</body></html>

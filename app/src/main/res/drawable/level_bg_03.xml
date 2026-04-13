@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="360"
+    android:viewportHeight="640">
+    <!-- Level 03: Forest Waterfall -->
+    <path android:fillColor="#061A1F" android:pathData="M0,0h360v640h-360z"/>
+    <path android:fillColor="#0E4A4A" android:pathData="M0,0h360v420h-360z"/>
+    <path android:fillColor="#1B5E20" android:pathData="M0,300c90,-60 150,-50 240,0c60,35 90,35 120,0v340h-360z" android:fillAlpha="0.90"/>
+    <path android:fillColor="#81D4FA" android:pathData="M250,0h60v640h-60z" android:fillAlpha="0.55"/>
+    <path android:fillColor="#4FC3F7" android:pathData="M260,0h40v640h-40z" android:fillAlpha="0.45"/>
+    <path android:fillColor="#B3E5FC" android:pathData="M270,0h20v640h-20z" android:fillAlpha="0.35"/>
+    <path android:fillColor="#E1F5FE" android:pathData="M100,120a18,18 0 1,0 36,0a18,18 0 1,0 -36,0" android:fillAlpha="0.30"/>
+    <path android:fillColor="#E1F5FE" android:pathData="M60,80a10,10 0 1,0 20,0a10,10 0 1,0 -20,0" android:fillAlpha="0.25"/>
+</vector>

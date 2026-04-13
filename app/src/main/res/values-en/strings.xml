@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Forest Adventure</string>
+
+    <!-- Main Menu -->
+    <string name="btn_play">PLAY</string>
+    <string name="btn_settings">Settings</string>
+    <string name="btn_leaderboard">Leaderboard</string>
+    <string name="title_adventure">FOREST</string>
+    <string name="title_forest">ADVENTURE</string>
+    <string name="cd_forest_bg">Forest background</string>
+    <string name="cd_fox_mascot">Adventure Fox</string>
+    <string name="lbl_your_score">Your score</string>
+    <string name="cd_profile_score">Your total points</string>
+    <string name="lbl_tap_to_play_level">Tap to play!</string>
+    <string name="btn_badges">Badges</string>
+    <string name="title_badges">BADGES</string>
+    <string name="lbl_no_badges_yet">No badges yet. Finish levels to earn them!</string>
+
+    <!-- Tutorial -->
+    <string name="btn_skip">⏩  SKIP</string>
+    <string name="btn_start_play">GOT IT, LET\'S GO!</string>
+    <string name="tutorial_tap_label">Tap to</string>
+    <string name="tutorial_tap_action">JUMP! 👆</string>
+    <string name="tutorial_description">Tap the screen to jump\nand help your little friend cross the forest!</string>
+    <string name="tutorial_instruction_tap">Tap Screen!</string>
+    <string name="tutorial_instruction_success">Great! %d/3</string>
+
+    <!-- Character Selection -->
+    <string name="title_choose_hero">CHOOSE YOUR HERO</string>
+    <string name="btn_start_adventure">START ADVENTURE</string>
+    <string name="lbl_speed">🏃 SPEED</string>
+    <string name="lbl_jump">🚀 JUMP</string>
+    <string name="lbl_durability">🛡️ DURABILITY</string>
+    <string name="cd_prev_char">Previous character</string>
+    <string name="cd_next_char">Next character</string>
+
+    <!-- Characters -->
+    <string name="char_fox_name">SWIFT FOX</string>
+    <string name="char_fox_desc">Balanced and cunning. Knows every corner of the forest!</string>
+    <string name="char_bear_name">BRAVE BEAR</string>
+    <string name="char_bear_desc">Slow but steady. The safest choice for little friends!</string>
+    <string name="char_squirrel_name">AGILE SQUIRREL</string>
+    <string name="char_squirrel_desc">Extremely fast and nimble. Evades the toughest obstacles!</string>
+
+    <!-- Chapter Selection & Worlds -->
+    <string name="title_chapter_select">ADVENTURE MAP</string>
+    <string name="world_1_name">WORLD 1: FOREST</string>
+    <string name="world_2_name">WORLD 2: BEACH</string>
+    <string name="world_3_name">WORLD 3: SKY</string>
+    <string name="world_4_name">WORLD 4: CRYSTAL CAVE</string>
+
+    <string name="level_1_name">Beginner Path</string>
+    <string name="level_2_name">Dense Vines</string>
+    <string name="level_3_name">Waterfall Path</string>
+    <string name="level_4_name">Golden Coast</string>
+    <string name="level_5_name">Cave Shore</string>
+    <string name="level_6_name">Cloud Glide</string>
+    <string name="level_7_name">Stormy Winds</string>
+    <string name="level_8_name">Crystal Tunnels</string>
+    <string name="level_9_name">Glittering Gallery</string>
+    <string name="level_10_name">Heart of Colors</string>
+
+    <!-- Game HUD -->
+    <string name="hud_chapter">CHAPTER %d</string>
+    <string name="hud_score">SCORE: %d</string>
+    <string name="cd_jump_btn">Jump</string>
+    <string name="cd_left_btn">Move Left</string>
+    <string name="cd_right_btn">Move Right</string>
+    <string name="cd_back_btn">Back</string>
+    <string name="cd_pause_btn">Pause</string>
+    <string name="pause_title">PAUSED</string>
+    <string name="btn_resume">RESUME</string>
+
+    <!-- Game Over -->
+    <string name="game_over_title">OH NO!</string>
+    <string name="game_over_subtitle">You got lost in the forest…</string>
+    <string name="btn_retry">TRY AGAIN</string>
+    <string name="btn_main_menu">MAIN MENU</string>
+
+    <!-- Level Complete -->
+    <string name="level_complete_title">LEVEL COMPLETE!</string>
+    <string name="victory_title">VICTORY!</string>
+    <string name="lbl_chapter_score">CHAPTER SCORE</string>
+    <string name="lbl_total_score">TOTAL SCORE:</string>
+    <string name="lbl_stars_collected">STARS:</string>
+    <string name="btn_continue">CONTINUE</string>
+    <string name="btn_replay">PLAY AGAIN</string>
+    <string name="btn_next_level">NEXT LEVEL</string>
+    <string name="btn_map">BACK TO MAP</string>
+    <string name="lbl_locked">Locked</string>
+
+    <!-- Leaderboard -->
+    <string name="title_leaderboard">Leaderboard</string>
+    <string name="filter_general">Global</string>
+    <string name="filter_school">School</string>
+    <string name="filter_friends">Friends</string>
+    <string name="lbl_ranking">RANK</string>
+    <string name="lbl_score">SCORE</string>
+
+    <!-- Settings -->
+    <string name="title_settings">SETTINGS</string>
+    <string name="setting_music">Music</string>
+    <string name="setting_sfx">Sound Effects</string>
+    <string name="setting_parental">Parental Lock</string>
+    <string name="setting_parental_sub">Manage settings</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="360"
+    android:viewportHeight="640">
+    <!-- Level 01: Forest Dawn -->
+    <path android:fillColor="#0B2A1A" android:pathData="M0,0h360v640h-360z"/>
+    <path android:fillColor="#124B2E" android:pathData="M0,0h360v420h-360z"/>
+    <path android:fillColor="#1E6B3C" android:pathData="M0,260c90,-60 150,-60 240,0c60,40 90,40 120,10v370h-360z"/>
+    <path android:fillColor="#2F8F4A" android:pathData="M0,320c80,-50 160,-30 240,10c40,20 80,20 120,-10v320h-360z" android:fillAlpha="0.85"/>
+    <path android:fillColor="#FFE082" android:pathData="M280,70a40,40 0 1,0 80,0a40,40 0 1,0 -80,0" android:fillAlpha="0.85"/>
+    <path android:fillColor="#C8E6C9" android:pathData="M40,120a18,18 0 1,0 36,0a18,18 0 1,0 -36,0" android:fillAlpha="0.45"/>
+    <path android:fillColor="#C8E6C9" android:pathData="M90,80a12,12 0 1,0 24,0a12,12 0 1,0 -24,0" android:fillAlpha="0.35"/>
+</vector>

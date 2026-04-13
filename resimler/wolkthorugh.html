@@ -1,0 +1,59 @@
+# PROJE PLANI: Kaybolan Renklerin Peşinde! (Gelişmiş Versiyon)
+
+## 1. VİZYON VE HİKAYE
+Büyülü Diyar'ın renklerini çalan sakar Gölge Hırsızı'nın peşinde, 4 sevimli kahramanımızın (Tilki, Ayı, Tavşan, Sincap) 10 farklı bölgede geçen macerası.
+
+## 2. TASARIM SİSTEMİ (DESIGN SYSTEM)
+- **Tema Adı:** Wildwood Adventure (Forest Explorer)
+- **Renk Paleti:** 
+    - Ana: Orman Yeşili (#4CAF50), Turuncu (#FF8C00)
+    - Vurgu: Kristal Moru (#9C27B0), Gökyüzü Mavisi (#2196F3)
+- **Tipografi:** Plus Jakarta Sans (Modern, Yuvarlak, Çocuk Dostu)
+- **İkonografi:** Kontürlü, yumuşak köşeli, neşeli simgeler.
+
+## 3. KARAKTERLER VE ÖZELLİKLER
+1. **Hızlı Tilki:** Yüksek hız, orta zıplama. (Referans: {{DATA:IMAGE:IMAGE_12}})
+2. **Cesur Ayı:** Dayanıklılık, güçlü itme mekaniği.
+3. **Akıllı Tavşan:** Çift zıplama, bulmaca çözme yeteneği.
+4. **Çevik Sincap:** Tırmanma ve dar alanlardan geçiş.
+
+## 4. OYUN EKRANLARI VE FONKSİYONLAR
+- **Ana Menü:** Saf orman temalı, modüler butonlar (Oyna, Ayarlar, Sıralama).
+- **Karakter Seçimi:** Kart tabanlı, özelliklerin yıldızlarla gösterildiği ekran.
+- **Bölüm Seçimi:** 1-10 arası kilitli/açık bölüm haritası.
+- **HUD (Oyun Arayüzü):** Can (Kalpler), Puan, Meyve Sayacı, Zıpla Butonu.
+- **Ödül Ekranı:** Bölüm sonu başarı animasyonu, kazanılan puanlar ve "Sonraki Bölüm" butonu.
+
+## 5. BÖLÜMLER VE ZORLUK DENGESİ (1-10)
+1. **Orman:** Başlangıç, temel kontroller.
+2. **Kumsal:** Zamanlamalı dalgalar.
+3. **Bulutlar:** Hareketli platformlar.
+4. **Kristal Mağara:** Işık/Karanlık mekaniği.
+5. **Yanardağ:** Hızlı reaksiyon, lav sıçramaları.
+6. **Buz Tapınağı:** Kaygan zemin fiziği.
+7. **Sihirli Bahçe:** Büyüyen/küçülen bitkiler.
+8. **Harap Şato:** Gizli geçitler ve bulmacalar.
+9. **Uzaylı Diyarı:** Düşük yerçekimi ve neon engeller.
+10. **Gölge Sığınağı:** Final Boss (Sakar Porsuk) ve Renklerin Dönüşü.
+
+## 6. TEKNİK MİMARİ
+- **Altyapı:** Unity veya Native Android (Kotlin).
+- **Veri:** SQLite ile offline puan ve ilerleme kaydı.
+- **AI Stratejisi:** Midjourney ile arka planlar, DALL-E ile karakter sprite'ları üretimi.
+
+---
+
+## 7. MASTER PROMPT (YAPAY ZEKA İÇİN TEK PROMPT)
+*"Design and develop a 2D side-scroller adventure game for kids aged 5-12. Theme: 'The Quest for Lost Colors'. 
+Visual Style: High-fidelity, vibrant, rounded cartoon aesthetics like Section 4 (Crystal Cave style). 
+Main Character: An adorable fox (Reference: {{DATA:IMAGE:IMAGE_12}}). 
+Screens needed: 
+1. Main Menu with forest background. 
+2. Character Selection showing Fox, Bear, Rabbit, Squirrel with stats. 
+3. Level Selection for 10 worlds. 
+4. Game HUD with Heart-lives, Fruit-counter, Score, and large Jump button. 
+5. Reward screen with score summary. 
+Level Mechanics: Gradually increasing difficulty from forest logs to moving cloud platforms, slippery ice, and low-gravity space zones. 
+UI Elements: Large, colorful buttons, legible rounded fonts (Plus Jakarta Sans). 
+Include a 'Shadow Thief' (clumsy badger) character appearing in backgrounds. 
+Ensure all screens follow the Wildwood Adventure Design System."*

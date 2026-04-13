@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="640dp"
+    android:viewportWidth="360"
+    android:viewportHeight="640">
+    <!-- Level 05: Cave Shore -->
+    <path android:fillColor="#071B2E" android:pathData="M0,0h360v640h-360z"/>
+    <path android:fillColor="#0B3D91" android:pathData="M0,0h360v300h-360z" android:fillAlpha="0.35"/>
+    <path android:fillColor="#263238" android:pathData="M0,240c90,-40 150,-40 240,0c60,26 90,26 120,0v400h-360z" android:fillAlpha="0.90"/>
+    <path android:fillColor="#FFCC80" android:pathData="M0,470c110,-55 190,-55 280,0c40,24 60,24 80,10v160h-360z" android:fillAlpha="0.85"/>
+    <path android:fillColor="#00B0FF" android:pathData="M20,590c70,-22 120,-22 190,0c60,18 100,18 150,0v50h-360z" android:fillAlpha="0.35"/>
+</vector>
