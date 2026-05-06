@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.zekaoformani.macera.R
 import com.zekaoformani.macera.data.models.characters
 import kotlinx.coroutines.delay
@@ -62,8 +65,22 @@ fun RewardScreen(
     onMap: () -> Unit,
     onReplay: () -> Unit
 ) {
-    val charRes = characters.find { it.id == characterId }?.imageRes ?: R.drawable.character_1
+    val charRes = characters.find { it.id == characterId }?.imageRes ?: R.drawable.fox
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current // Coil için context'i aldık
+
+    // Coil ImageLoader'ı oluşturuyoruz (GIF desteği için)
+    val imageLoader = remember {
+        coil.ImageLoader.Builder(context)
+            .components {
+                if (android.os.Build.VERSION.SDK_INT >= 28) {
+                    add(coil.decode.ImageDecoderDecoder.Factory())
+                } else {
+                    add(coil.decode.GifDecoder.Factory())
+                }
+            }
+            .build()
+    }
 
     // Sequential Star Pops (Sadece galibiyette)
     var star1Visible by remember { mutableStateOf(false) }
@@ -104,8 +121,8 @@ fun RewardScreen(
 
                 // Başlık
                 Text(
-                    text = if (isVictory) stringResource(R.string.victory_title) 
-                           else stringResource(R.string.game_over_title),
+                    text = if (isVictory) stringResource(R.string.victory_title)
+                    else stringResource(R.string.game_over_title),
                     color = if (isVictory) Color(0xFFFFD700) else Color(0xFFFF5252),
                     fontSize = if (isVictory) 44.sp else 48.sp,
                     fontWeight = FontWeight.Black,
@@ -155,7 +172,7 @@ fun RewardScreen(
 
                 Spacer(modifier = Modifier.weight(0.4f))
 
-                // Karakter Animasyonu
+                // Karakter Animasyonu (Buradaki Image AsyncImage'a dönüştürüldü!)
                 val infiniteTransition = rememberInfiniteTransition(label = "rewardCharAnim")
                 val charY by infiniteTransition.animateFloat(
                     initialValue = 0f, targetValue = -25f,
@@ -163,8 +180,11 @@ fun RewardScreen(
                     label = "charFloat"
                 )
 
-                Image(
-                    painter = painterResource(id = charRes),
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(charRes)
+                        .build(),
+                    imageLoader = imageLoader,
                     contentDescription = null,
                     modifier = Modifier
                         .size(200.dp)
@@ -210,22 +230,22 @@ fun RewardScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BubbleButton(
-                        icon = Icons.Default.Refresh, 
-                        color = Color(0xFFF43F5E), 
+                        icon = Icons.Default.Refresh,
+                        color = Color(0xFFF43F5E),
                         text = stringResource(R.string.btn_retry),
                         onClick = onReplay
                     )
                     BubbleButton(
-                        icon = Icons.Default.Place, 
-                        color = Color(0xFF8B5CF6), 
+                        icon = Icons.Default.Place,
+                        color = Color(0xFF8B5CF6),
                         text = stringResource(R.string.btn_map),
                         onClick = onMap,
                         size = 80.dp
                     )
                     if (isVictory) {
                         BubbleButton(
-                            icon = Icons.AutoMirrored.Filled.ArrowForward, 
-                            color = Color(0xFF10B981), 
+                            icon = Icons.AutoMirrored.Filled.ArrowForward,
+                            color = Color(0xFF10B981),
                             text = stringResource(R.string.btn_next_level),
                             onClick = onNext
                         )
@@ -261,8 +281,8 @@ fun AnimatedStar(visible: Boolean, size: androidx.compose.ui.unit.Dp, rotation: 
         modifier = Modifier
             .size(size)
             .graphicsLayer(
-                rotationZ = rotation, 
-                scaleX = scale * pulseScale, 
+                rotationZ = rotation,
+                scaleX = scale * pulseScale,
                 scaleY = scale * pulseScale
             )
     )
@@ -280,8 +300,8 @@ fun BubbleButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.8f else 1f, 
-        animationSpec = spring(stiffness = Spring.StiffnessLow), 
+        targetValue = if (isPressed) 0.8f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "btnScale"
     )
 

@@ -39,11 +39,11 @@
     <!-- Karakterler -->
     <string name="char_fox_name">HIZLI TİLKİ</string>
     <string name="char_fox_desc">Dengeli ve kurnaz. Ormanın her köşesini bilir!</string>
-    <string name="char_bear_name">CESUR AYI</string>
-    <string name="char_bear_desc">Yavaş ama sarsılmaz. Küçük dostlar için en güvenli seçim!</string>
-    <string name="char_squirrel_name">ÇEVİK SİNCAP</string>
-    <string name="char_squirrel_desc">Aşırı hızlı ve atik. En zorlu engellerden bile kaçar!</string>
+    <string name="char_monkey_name" translatable="false">CRAZY MONKEY</string>
+    <string name="char_monkey_desc" translatable="false">Çevik ve çılgın! Herkesten daha yükseğe zıplar.</string>
 
+    <string name="char_tiger_name" translatable="false">WILD TIGER</string>
+    <string name="char_tiger_desc" translatable="false">Korkusuz ve güçlü! Karşısına çıkan engelleri rahatça parçalar.</string>
     <!-- Bölüm Seçim & Dünyalar -->
     <string name="title_chapter_select">MACERA HARİTASI</string>
     <string name="world_1_name">DÜNYA 1: ORMAN</string>
