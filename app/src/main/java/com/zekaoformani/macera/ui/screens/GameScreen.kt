@@ -1,7 +1,6 @@
 package com.zekaoformani.macera.ui.screens
 
 import android.os.Build.VERSION.SDK_INT
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +10,8 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -94,6 +95,15 @@ fun GameScreen(
     var coins by remember { mutableStateOf(listOf<Coin>()) }
     var birds by remember { mutableStateOf(listOf<Decoration>()) }
 
+    // --- YENİ: YETENEK (KALKAN) SİSTEMİ ---
+    val hasShieldAbility = heroData.durabilityStars >= 4 // 4 ve üzeri yıldızı olanlarda aktif
+    var isShieldUsed by remember { mutableStateOf(false) } // Oyunda sadece 1 kez basılabilir
+    var isShieldActive by remember { mutableStateOf(false) } // Butona basıldığında true olur
+    var shieldTimer by remember { mutableIntStateOf(0) } // 20 saniyelik sayaç
+
+    var isInvincible by remember { mutableStateOf(false) } // Kalkan kırıldıktan sonraki geçici ölümsüzlük
+    var invincibilityTimer by remember { mutableIntStateOf(0) }
+
     // ARKA PLAN AYARLARI
     val bgImage = ImageBitmap.imageResource(id = R.drawable.sonsuz_orman)
     val density = context.resources.displayMetrics.density
@@ -105,7 +115,8 @@ fun GameScreen(
     val scaledImageWidthDp = (rawImageWidthPx / density) * scaleFactor
 
     var bgOffsetX by remember { mutableFloatStateOf(0f) }
-    val baseSpeed = 5f + (chapterId * 0.5f)
+    // YENİ HIZ SİSTEMİ: Karakterin Hız Yıldızına göre başlar!
+    val baseSpeed = 5f + (heroData.speedStars * 0.4f)
     val bgSpeedFactor = 0.3f
     val speedIncreaseFactor = 1f + (score / 150f)
     val effectiveBgSpeed = (baseSpeed * bgSpeedFactor) * speedIncreaseFactor
@@ -127,7 +138,20 @@ fun GameScreen(
 
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
-            delay(16)
+            delay(16) // Yaklaşık 60 FPS (1 Saniye = ~60 Frame)
+
+            // --- YETENEK SAYAÇLARI KONTROLÜ ---
+            if (isInvincible) {
+                invincibilityTimer--
+                if (invincibilityTimer <= 0) isInvincible = false
+            }
+
+            if (isShieldActive) {
+                shieldTimer--
+                if (shieldTimer <= 0) {
+                    isShieldActive = false // 20 Saniye bitti, kalkan boşa gitti
+                }
+            }
 
             val loopWidth = scaledImageWidthDp * 2
             bgOffsetX -= effectiveBgSpeed
@@ -205,11 +229,24 @@ fun GameScreen(
             for (obs in obstacles) {
                 val oLeft = obs.x + 35f; val oRight = obs.x + obs.width - 35f
                 val oBottom = obs.y + 15f; val oTop = obs.y + 80f
-                if (cLeft < oRight && cRight > oLeft && cBottom < oTop && cTop > oBottom) {
-                    isPlaying = false
-                    isGameOver = true
-                    soundManager.pauseBackgroundMusic()
-                    soundManager.playGameOver()
+
+                // ÇARPIŞMA KONTROLÜ
+                if (!isInvincible && cLeft < oRight && cRight > oLeft && cBottom < oTop && cTop > oBottom) {
+
+                    if (isShieldActive) {
+                        // Kalkan Aktifse: Kalkan kırılır, oyuncu kurtulur!
+                        isShieldActive = false
+                        shieldTimer = 0
+                        isInvincible = true
+                        invincibilityTimer = 45 // Kalkan kırıldıktan sonra çok kısa bir dokunulmazlık (içinden geçmesi için)
+                        soundManager.playJump() // (İstersen buraya sonradan kalkan kırılma sesi ekleyebilirsin)
+                    } else {
+                        // Kalkan yoksa: Oyun Biter
+                        isPlaying = false
+                        isGameOver = true
+                        soundManager.pauseBackgroundMusic()
+                        soundManager.playGameOver()
+                    }
                 }
             }
         }
@@ -277,18 +314,92 @@ fun GameScreen(
                         modifier = Modifier.offset(x = obs.x.dp, y = yPos).size(obs.width.dp, obs.height.dp), contentScale = ContentScale.Fit)
                 }
 
+                // KARAKTER ÇİZİMİ VE KALKAN EFEKTİ
                 val cW = if (isSliding) 140.dp else 120.dp
                 val cH = if (isSliding) 80.dp else 150.dp
-                AsyncImage(model = heroData.imageRes, imageLoader = imageLoader, contentDescription = "Hero",
+
+                Box(
                     modifier = Modifier.offset(x = 100.dp, y = groundLineY - charY.dp - cH + charPush).size(cW, cH),
-                    contentScale = ContentScale.Fit, alignment = Alignment.BottomCenter)
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Eğer kalkan aktifse karakterin arkasında parlayan bir halka çizilir
+                    if (isShieldActive) {
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            drawCircle(color = Color(0xFF69F0AE).copy(alpha = 0.35f), radius = size.width / 1.5f)
+                            drawCircle(color = Color(0xFF69F0AE), radius = size.width / 1.5f, style = androidx.compose.ui.graphics.drawscope.Stroke(6f))
+                        }
+                    } else if (isInvincible) {
+                        // Kalkan kırıldığında ufak bir kırmızı/beyaz parlama efekti (Hasar yeme hissi)
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            drawCircle(color = Color.White.copy(alpha = 0.5f), radius = size.width / 1.8f)
+                        }
+                    }
+
+                    AsyncImage(model = heroData.imageRes, imageLoader = imageLoader, contentDescription = "Hero",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit, alignment = Alignment.BottomCenter)
+                }
             }
 
+            // --- YENİ: SOL ALT KALKAN BUTONU VE SAYAÇ ---
+            if (hasShieldAbility && isPlaying && !isGameOver) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(24.dp)
+                        .safeDrawingPadding(),
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    val shieldColor = when {
+                        isShieldActive -> Color(0xFF69F0AE) // Aktif (Yeşil)
+                        isShieldUsed -> Color.Gray.copy(alpha = 0.5f) // Kullanıldı (Gri)
+                        else -> Color(0xFF29B6F6) // Hazır (Mavi)
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(
+                            onClick = {
+                                if (!isShieldUsed && !isShieldActive) {
+                                    isShieldUsed = true
+                                    isShieldActive = true
+                                    shieldTimer = 1200 // 60 frame * 20 Saniye = 1200
+                                }
+                            },
+                            modifier = Modifier
+                                .size(64.dp)
+                                .background(shieldColor.copy(alpha = 0.2f), CircleShape)
+                                .border(3.dp, shieldColor, CircleShape)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Security,
+                                contentDescription = "Kalkan Aktif Et",
+                                tint = shieldColor,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
+                        // Kalkan aktifken süreyi göster (frame'i saniyeye çeviriyoruz)
+                        if (isShieldActive) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "${shieldTimer / 60}",
+                                color = Color(0xFF69F0AE),
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Black,
+                                style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 10f))
+                            )
+                        }
+                    }
+                }
+            }
+
+            // --- ÜST PANEL ---
             Row(modifier = Modifier.fillMaxWidth().padding(16.dp).safeDrawingPadding(), horizontalArrangement = Arrangement.SpaceBetween) {
                 IconButton(
                     onClick = {
                         dataManager.addCoins(collectedCoins)
                         dataManager.saveHighScore(score)
+                        dataManager.saveLastScore(score)
                         isPlaying = false
                         onNavigateBack()
                     },
@@ -310,6 +421,7 @@ fun GameScreen(
                 }
             }
 
+            // --- YAKALANDIN EKRANI ---
             if (isGameOver) {
                 val isNewRecord = score > 0 && score > dataManager.getHighScore()
 
@@ -392,6 +504,7 @@ fun GameScreen(
                                     .clickable {
                                         dataManager.addCoins(collectedCoins)
                                         dataManager.saveHighScore(score)
+                                        dataManager.saveLastScore(score)
                                         isPlaying = false
                                         onNavigateBack()
                                     },
@@ -412,13 +525,21 @@ fun GameScreen(
                                     .clickable {
                                         dataManager.addCoins(collectedCoins)
                                         dataManager.saveHighScore(score)
+                                        dataManager.saveLastScore(score)
 
+                                        // YENİ: Tekrar Dene dendiğinde her şeyi sıfırla
                                         score = 0
                                         collectedCoins = 0
                                         charY = groundLevel
                                         obstacles = emptyList()
                                         coins = emptyList()
                                         birds = emptyList()
+                                        isShieldUsed = false
+                                        isShieldActive = false
+                                        shieldTimer = 0
+                                        isInvincible = false
+                                        invincibilityTimer = 0
+
                                         isGameOver = false
                                         isPlaying = true
                                     },

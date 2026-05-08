@@ -13,7 +13,7 @@ class DataManager(context: Context) {
         prefs.edit().putInt("total_coins", current + amount).apply()
     }
 
-    // YENİ: Karakter satın alırken altın harcama
+    // Karakter satın alırken altın harcama
     fun spendCoins(amount: Int): Boolean {
         val current = getTotalCoins()
         if (current >= amount) {
@@ -33,7 +33,21 @@ class DataManager(context: Context) {
         }
     }
 
-    // --- KARAKTER KİLİT SİSTEMİ (YENİ) ---
+    // --- SON 10 SKOR SİSTEMİ (YENİ EKLENDİ) ---
+    fun getLastScores(): List<Int> {
+        val scoreStr = prefs.getString("last_scores", "") ?: ""
+        if (scoreStr.isEmpty()) return emptyList()
+        return scoreStr.split(",").mapNotNull { it.toIntOrNull() }
+    }
+
+    fun saveLastScore(score: Int) {
+        val scores = getLastScores().toMutableList()
+        scores.add(0, score) // Yeni skoru listenin en başına ekle
+        val limitedScores = scores.take(10) // Sadece son 10 skoru tut
+        prefs.edit().putString("last_scores", limitedScores.joinToString(",")).apply()
+    }
+
+    // --- KARAKTER KİLİT SİSTEMİ ---
     // Tilki (ID: 1) varsayılan olarak her zaman açıktır.
     fun isCharacterUnlocked(characterId: Int): Boolean {
         if (characterId == 1) return true

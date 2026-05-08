@@ -3,28 +3,18 @@ package com.zekaoformani.macera.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.res.stringResource
-import com.zekaoformani.macera.R
 
 @Composable
 fun SettingsOverlay(
@@ -34,150 +24,84 @@ fun SettingsOverlay(
     onSfxToggle: (Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                // Oyuna uygun ahşap rengi arka plan
+                .background(Brush.verticalGradient(listOf(Color(0xFF4E342E), Color(0xFF2E1A14))))
+                // Altın rengi çerçeve
+                .border(4.dp, Color(0xFFFFB300), RoundedCornerShape(24.dp))
+                .padding(24.dp)
         ) {
-            Card(
-                shape = RoundedCornerShape(48.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(8.dp, Color(0xFF4CAF50), RoundedCornerShape(48.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Box(modifier = Modifier.padding(24.dp)) {
-                    // Close Button
-                    IconButton(
-                        onClick = onDismiss,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .size(48.dp)
-                            .background(Color(0xFFFF5252), CircleShape)
-                            .border(2.dp, Color.White.copy(alpha = 0.5f), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = stringResource(R.string.title_settings),
-                            color = Color(0xFF4CAF50),
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Black,
-                            style = LocalTextStyle.current.copy(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        // Rows
-                        SettingsRow(
-                            icon = Icons.Default.MusicNote,
-                            label = stringResource(R.string.setting_music),
-                            checked = musicEnabled,
-                            onToggle = onMusicToggle
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        SettingsRow(
-                            icon = Icons.AutoMirrored.Filled.VolumeUp,
-                            label = stringResource(R.string.setting_sfx),
-                            checked = sfxEnabled,
-                            onToggle = onSfxToggle
-                        )
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        // Parental Lock
-                        Button(
-                            onClick = { /* Logic */ },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F2937)),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .background(Color.White.copy(alpha = 0.1f), CircleShape),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White)
-                                }
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(stringResource(R.string.setting_parental), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                                    Text(stringResource(R.string.setting_parental_sub), color = Color.Gray, fontSize = 12.sp)
-                                }
-                                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFFF48C25))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SettingsRow(
-    icon: ImageVector,
-    label: String,
-    checked: Boolean,
-    onToggle: (Boolean) -> Unit
-) {
-    Surface(
-        color = Color(0xFFF9FAFB),
-        shape = RoundedCornerShape(24.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF3F4F6)),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .background(Color(0xFFF48C25).copy(alpha = 0.2f), RoundedCornerShape(16.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(icon, contentDescription = null, tint = Color(0xFFF48C25), modifier = Modifier.size(32.dp))
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = label, color = Color(0xFF374151), fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Switch(
-                checked = checked,
-                onCheckedChange = onToggle,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = Color(0xFFF48C25),
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = Color.LightGray
+                Text(
+                    text = "AYARLAR",
+                    color = Color(0xFFFFD700),
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Black
                 )
-            )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // --- MÜZİK AYARI ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Arka Plan Müziği", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Switch(
+                        checked = musicEnabled,
+                        onCheckedChange = onMusicToggle,
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF69F0AE), // Aktifken parlak yeşil
+                            checkedTrackColor = Color(0xFF69F0AE).copy(alpha = 0.4f),
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.DarkGray
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // --- SES EFEKTLERİ AYARI ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Ses Efektleri", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Switch(
+                        checked = sfxEnabled,
+                        onCheckedChange = onSfxToggle,
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF69F0AE),
+                            checkedTrackColor = Color(0xFF69F0AE).copy(alpha = 0.4f),
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.DarkGray
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // --- KAPAT BUTONU ---
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)), // Kırmızı çıkış butonu
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("KAPAT", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Black)
+                }
+            }
         }
     }
 }

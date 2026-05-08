@@ -34,7 +34,7 @@ fun MaceraNavHost(
     var settingsMusicOn by remember { mutableStateOf(prefs.isMusicEnabled()) }
     var settingsSfxOn by remember { mutableStateOf(prefs.isSfxEnabled()) }
 
-    // Canlı Skor (Skor tablosu/Leaderboard için hala lazım)
+    // Canlı Skor
     val totalScore by gameViewModel.totalScore.collectAsState()
 
     NavHost(
@@ -47,7 +47,7 @@ fun MaceraNavHost(
         popExitTransition = { fadeOut(tween(350)) }
     ) {
 
-        // 1. ANA MENÜ (Güncellendi: totalScore parametresi kaldırıldı)
+        // 1. ANA MENÜ
         composable(Screen.MainMenu.route) {
             MainMenuScreen(
                 onNavigateToCharacterSelection = {
@@ -60,7 +60,7 @@ fun MaceraNavHost(
             )
         }
 
-        // 2. TUTORIAL
+        // 2. TUTORIAL (EĞİTİM EKRANI)
         composable(Screen.Tutorial.route) {
             TutorialScreen(
                 characterId = 1,
@@ -73,34 +73,20 @@ fun MaceraNavHost(
             )
         }
 
-        // 3. KARAKTER SEÇİMİ
+        // 3. KARAKTER SEÇİMİ (Mağaza)
         composable(Screen.CharacterSelection.route) {
             CharacterSelectionScreen(
                 onBackClicked = { navController.popBackStack() },
                 onStartAdventure = { characterId: Int ->
                     gameViewModel.selectCharacter(characterId)
-                    navController.navigate("chapter_selection/$characterId")
+
+                    // GÜNCELLEME: Bölüm seçimi atlandı, doğrudan oyuna (1. Hız seviyesi ile) giriliyor!
+                    navController.navigate("game_screen/$characterId/1")
                 }
             )
         }
 
-        // 4. BÖLÜM SEÇİM HARİTASI
-        composable(
-            route = "chapter_selection/{characterId}",
-            arguments = listOf(navArgument("characterId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val charId = backStackEntry.arguments?.getInt("characterId") ?: 1
-            ChapterSelectionScreen(
-                characterId = charId,
-                unlockedChapter = prefs.getUnlockedChapter(),
-                levelStars = { levelId -> prefs.getLevelStars(levelId) },
-                levelCompleted = { levelId -> prefs.isLevelCompleted(levelId) },
-                onNavigateBack = { navController.popBackStack() },
-                onChapterSelected = { chapterId ->
-                    navController.navigate("game_screen/$charId/$chapterId")
-                }
-            )
-        }
+        // DİKKAT: 4. BÖLÜM SEÇİM EKRANI (ChapterSelectionScreen) BURADAN TAMAMEN KALDIRILDI
 
         // 5. OYUN EKRANI
         composable(
@@ -112,30 +98,22 @@ fun MaceraNavHost(
         ) { backStackEntry ->
             val charId = backStackEntry.arguments?.getInt("characterId") ?: 1
             val chapId = backStackEntry.arguments?.getInt("chapterId") ?: 1
+
             GameScreen(
                 characterId = charId,
                 chapterId = chapId,
-                onNavigateBack = { navController.popBackStack() },
-                onLevelCompleted = { levelId, scoreEarned, starsEarned ->
-                    gameViewModel.addScore(scoreEarned)
-                    prefs.setLevelResult(levelId, starsEarned, scoreEarned)
-                    prefs.addBadge("badge_level_$levelId")
-                    if (starsEarned == 3) prefs.addBadge("badge_perfect_$levelId")
-                    gameViewModel.unlockChapter(levelId + 1)
-
-                    if (levelId < 10) {
-                        val nextLevel = levelId + 1
-                        navController.navigate("game_screen/$charId/$nextLevel") {
-                            popUpTo("game_screen/$charId/$levelId") { inclusive = true }
-                        }
-                    } else {
-                        navController.popBackStack()
-                    }
+                onNavigateBack = {
+                    // Oyundan çıkınca Ana Menüye dönsün istersen popUpTo kullanabiliriz
+                    // Şimdilik standart geri gitme (Karakter Seçimine döner)
+                    navController.popBackStack()
+                },
+                onLevelCompleted = { _, _, _ ->
+                    // Sonsuz koşuda level bitme durumu olmadığı için burası boş bırakıldı
                 }
             )
         }
 
-        // 6. SKORLAR
+        // 6. SKORLAR TABLOSU
         composable(Screen.Leaderboard.route) {
             val perLevel = com.zekaoformani.macera.data.models.levels.map { lvl ->
                 Triple(lvl.id, prefs.getLevelBestScore(lvl.id), prefs.getLevelStars(lvl.id))
