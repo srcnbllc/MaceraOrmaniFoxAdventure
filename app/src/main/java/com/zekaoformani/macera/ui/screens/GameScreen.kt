@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,12 +28,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -63,7 +67,9 @@ fun GameScreen(
 ) {
     val context = LocalContext.current
     val dataManager = remember { DataManager(context) }
-    val soundManager = remember { SoundManager(context) }
+    val soundManager = remember { SoundManager.getInstance(context) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     val configuration = LocalConfiguration.current
 
     val screenWidth = configuration.screenWidthDp.toFloat()
@@ -79,6 +85,8 @@ fun GameScreen(
 
     var isPlaying by remember { mutableStateOf(false) }
     var isGameOver by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) } // YENİ: Duraklatma State'i
+
     var score by remember { mutableIntStateOf(0) }
     var collectedCoins by remember { mutableIntStateOf(0) }
 
@@ -95,13 +103,13 @@ fun GameScreen(
     var coins by remember { mutableStateOf(listOf<Coin>()) }
     var birds by remember { mutableStateOf(listOf<Decoration>()) }
 
-    // --- YENİ: YETENEK (KALKAN) SİSTEMİ ---
-    val hasShieldAbility = heroData.durabilityStars >= 4 // 4 ve üzeri yıldızı olanlarda aktif
-    var isShieldUsed by remember { mutableStateOf(false) } // Oyunda sadece 1 kez basılabilir
-    var isShieldActive by remember { mutableStateOf(false) } // Butona basıldığında true olur
-    var shieldTimer by remember { mutableIntStateOf(0) } // 20 saniyelik sayaç
+    // YETENEK (KALKAN) SİSTEMİ
+    val hasShieldAbility = heroData.durabilityStars >= 4
+    var isShieldUsed by remember { mutableStateOf(false) }
+    var isShieldActive by remember { mutableStateOf(false) }
+    var shieldTimer by remember { mutableIntStateOf(0) }
 
-    var isInvincible by remember { mutableStateOf(false) } // Kalkan kırıldıktan sonraki geçici ölümsüzlük
+    var isInvincible by remember { mutableStateOf(false) }
     var invincibilityTimer by remember { mutableIntStateOf(0) }
 
     // ARKA PLAN AYARLARI
@@ -115,32 +123,51 @@ fun GameScreen(
     val scaledImageWidthDp = (rawImageWidthPx / density) * scaleFactor
 
     var bgOffsetX by remember { mutableFloatStateOf(0f) }
-    // YENİ HIZ SİSTEMİ: Karakterin Hız Yıldızına göre başlar!
+
+    // HIZ SİSTEMİ
     val baseSpeed = 5f + (heroData.speedStars * 0.4f)
     val bgSpeedFactor = 0.3f
     val speedIncreaseFactor = 1f + (score / 150f)
     val effectiveBgSpeed = (baseSpeed * bgSpeedFactor) * speedIncreaseFactor
     val effectiveGameSpeed = baseSpeed * speedIncreaseFactor
 
-    DisposableEffect(Unit) {
+    // MÜZİK YAŞAM DÖNGÜSÜ BEKÇİSİ
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    if (isPlaying && !isGameOver && !isPaused) {
+                        soundManager.playBackgroundMusic(R.raw.orman_muzigi)
+                    }
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    soundManager.stopBackgroundMusic()
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            soundManager.release()
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            soundManager.stopBackgroundMusic()
         }
     }
 
-    LaunchedEffect(isPlaying, isGameOver) {
-        if (isPlaying && !isGameOver) {
-            soundManager.playBackgroundMusic()
+    // OYUN İÇİ DURUMLARA GÖRE MÜZİK TETİKLEYİCİ
+    LaunchedEffect(isPlaying, isGameOver, isPaused) {
+        if (isPlaying && !isGameOver && !isPaused) {
+            soundManager.playBackgroundMusic(R.raw.orman_muzigi)
         } else {
-            soundManager.pauseBackgroundMusic()
+            soundManager.stopBackgroundMusic()
         }
     }
 
+    // OYUN DÖNGÜSÜ
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
-            delay(16) // Yaklaşık 60 FPS (1 Saniye = ~60 Frame)
+            delay(16)
 
-            // --- YETENEK SAYAÇLARI KONTROLÜ ---
+            // YETENEK SAYAÇLARI KONTROLÜ
             if (isInvincible) {
                 invincibilityTimer--
                 if (invincibilityTimer <= 0) isInvincible = false
@@ -149,7 +176,7 @@ fun GameScreen(
             if (isShieldActive) {
                 shieldTimer--
                 if (shieldTimer <= 0) {
-                    isShieldActive = false // 20 Saniye bitti, kalkan boşa gitti
+                    isShieldActive = false
                 }
             }
 
@@ -230,21 +257,17 @@ fun GameScreen(
                 val oLeft = obs.x + 35f; val oRight = obs.x + obs.width - 35f
                 val oBottom = obs.y + 15f; val oTop = obs.y + 80f
 
-                // ÇARPIŞMA KONTROLÜ
                 if (!isInvincible && cLeft < oRight && cRight > oLeft && cBottom < oTop && cTop > oBottom) {
-
                     if (isShieldActive) {
-                        // Kalkan Aktifse: Kalkan kırılır, oyuncu kurtulur!
                         isShieldActive = false
                         shieldTimer = 0
                         isInvincible = true
-                        invincibilityTimer = 45 // Kalkan kırıldıktan sonra çok kısa bir dokunulmazlık (içinden geçmesi için)
-                        soundManager.playJump() // (İstersen buraya sonradan kalkan kırılma sesi ekleyebilirsin)
+                        invincibilityTimer = 45
+                        soundManager.playJump()
                     } else {
-                        // Kalkan yoksa: Oyun Biter
                         isPlaying = false
                         isGameOver = true
-                        soundManager.pauseBackgroundMusic()
+                        soundManager.stopBackgroundMusic()
                         soundManager.playGameOver()
                     }
                 }
@@ -258,11 +281,11 @@ fun GameScreen(
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        if (dragAmount.y < -15f && isPlaying && !isGameOver && charY == groundLevel) {
+                        if (dragAmount.y < -15f && isPlaying && !isGameOver && !isPaused && charY == groundLevel) {
                             velocityY = baseJumpStrength
                             isSliding = false
                             soundManager.playJump()
-                        } else if (dragAmount.y > 15f && isPlaying && !isGameOver && charY == groundLevel && !isSliding) {
+                        } else if (dragAmount.y > 15f && isPlaying && !isGameOver && !isPaused && charY == groundLevel && !isSliding) {
                             isSliding = true
                             slideTimer = 35
                         }
@@ -314,7 +337,6 @@ fun GameScreen(
                         modifier = Modifier.offset(x = obs.x.dp, y = yPos).size(obs.width.dp, obs.height.dp), contentScale = ContentScale.Fit)
                 }
 
-                // KARAKTER ÇİZİMİ VE KALKAN EFEKTİ
                 val cW = if (isSliding) 140.dp else 120.dp
                 val cH = if (isSliding) 80.dp else 150.dp
 
@@ -322,14 +344,12 @@ fun GameScreen(
                     modifier = Modifier.offset(x = 100.dp, y = groundLineY - charY.dp - cH + charPush).size(cW, cH),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Eğer kalkan aktifse karakterin arkasında parlayan bir halka çizilir
                     if (isShieldActive) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawCircle(color = Color(0xFF69F0AE).copy(alpha = 0.35f), radius = size.width / 1.5f)
                             drawCircle(color = Color(0xFF69F0AE), radius = size.width / 1.5f, style = androidx.compose.ui.graphics.drawscope.Stroke(6f))
                         }
                     } else if (isInvincible) {
-                        // Kalkan kırıldığında ufak bir kırmızı/beyaz parlama efekti (Hasar yeme hissi)
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawCircle(color = Color.White.copy(alpha = 0.5f), radius = size.width / 1.8f)
                         }
@@ -341,8 +361,8 @@ fun GameScreen(
                 }
             }
 
-            // --- YENİ: SOL ALT KALKAN BUTONU VE SAYAÇ ---
-            if (hasShieldAbility && isPlaying && !isGameOver) {
+            // SOL ALT KALKAN BUTONU VE SAYAÇ
+            if (hasShieldAbility && isPlaying && !isGameOver && !isPaused) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -351,9 +371,9 @@ fun GameScreen(
                     contentAlignment = Alignment.BottomStart
                 ) {
                     val shieldColor = when {
-                        isShieldActive -> Color(0xFF69F0AE) // Aktif (Yeşil)
-                        isShieldUsed -> Color.Gray.copy(alpha = 0.5f) // Kullanıldı (Gri)
-                        else -> Color(0xFF29B6F6) // Hazır (Mavi)
+                        isShieldActive -> Color(0xFF69F0AE)
+                        isShieldUsed -> Color.Gray.copy(alpha = 0.5f)
+                        else -> Color(0xFF29B6F6)
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -362,7 +382,7 @@ fun GameScreen(
                                 if (!isShieldUsed && !isShieldActive) {
                                     isShieldUsed = true
                                     isShieldActive = true
-                                    shieldTimer = 1200 // 60 frame * 20 Saniye = 1200
+                                    shieldTimer = 1200
                                 }
                             },
                             modifier = Modifier
@@ -378,7 +398,6 @@ fun GameScreen(
                             )
                         }
 
-                        // Kalkan aktifken süreyi göster (frame'i saniyeye çeviriyoruz)
                         if (isShieldActive) {
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
@@ -393,27 +412,36 @@ fun GameScreen(
                 }
             }
 
-            // --- ÜST PANEL ---
-            Row(modifier = Modifier.fillMaxWidth().padding(16.dp).safeDrawingPadding(), horizontalArrangement = Arrangement.SpaceBetween) {
+            // --- ÜST PANEL (DURAKLAT BUTONU EKLENDİ) ---
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp).safeDrawingPadding(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // ŞIK PAUSE BUTONU
                 IconButton(
                     onClick = {
-                        dataManager.addCoins(collectedCoins)
-                        dataManager.saveHighScore(score)
-                        dataManager.saveLastScore(score)
-                        isPlaying = false
-                        onNavigateBack()
+                        if (isPlaying && !isGameOver) {
+                            isPlaying = false
+                            isPaused = true
+                        }
                     },
                     modifier = Modifier.background(Color.Black.copy(0.5f), CircleShape)
                 ) {
-                    Text("X", color = Color.White, fontWeight = FontWeight.Black)
+                    Icon(
+                        imageVector = Icons.Default.Pause,
+                        contentDescription = "Duraklat",
+                        tint = Color.White
+                    )
                 }
+
                 Column(horizontalAlignment = Alignment.End) {
                     Text("SKOR: $score", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black, style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 8f)))
                     Text("ALTIN: $collectedCoins", color = Color(0xFFFFD700), fontSize = 20.sp, fontWeight = FontWeight.Bold, style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 8f)))
                 }
             }
 
-            if (!isPlaying && !isGameOver && score == 0) {
+            if (!isPlaying && !isGameOver && !isPaused && score == 0) {
                 Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(0.6f)), contentAlignment = Alignment.Center) {
                     Button(onClick = { isPlaying = true }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))) {
                         Text("KOŞMAYA BAŞLA", fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -421,7 +449,84 @@ fun GameScreen(
                 }
             }
 
-            // --- YAKALANDIN EKRANI ---
+            // --- YENİ: DURAKLATILDI MENÜSÜ ---
+            if (isPaused) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(0.85f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth(0.85f)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(Brush.verticalGradient(listOf(Color(0xFF34495E), Color(0xFF2C3E50))))
+                            .border(4.dp, Color(0xFF29B6F6), RoundedCornerShape(24.dp))
+                            .padding(24.dp)
+                    ) {
+                        Text(
+                            text = "DURAKLATILDI",
+                            color = Color(0xFF29B6F6),
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Black,
+                            style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 15f))
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text(
+                            text = "SKOR: $score",
+                            color = Color.White,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        // DEVAM ET BUTONU
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Brush.verticalGradient(listOf(Color(0xFF2ECC71), Color(0xFF27AE60))))
+                                .border(2.dp, Color.White, RoundedCornerShape(16.dp))
+                                .clickable {
+                                    isPaused = false
+                                    isPlaying = true
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("DEVAM ET", color = Color.White, fontWeight = FontWeight.Black, fontSize = 18.sp)
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // ANA MENÜYE DÖN BUTONU
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Brush.verticalGradient(listOf(Color(0xFF7F8C8D), Color(0xFF2C3E50))))
+                                .border(2.dp, Color.LightGray, RoundedCornerShape(16.dp))
+                                .clickable {
+                                    dataManager.addCoins(collectedCoins)
+                                    dataManager.saveHighScore(score)
+                                    dataManager.saveLastScore(score)
+                                    isPaused = false
+                                    isPlaying = false
+                                    onNavigateBack()
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("ANA MENÜ", color = Color.White, fontWeight = FontWeight.Black, fontSize = 18.sp)
+                        }
+                    }
+                }
+            }
+
+            // YAKALANDIN EKRANI
             if (isGameOver) {
                 val isNewRecord = score > 0 && score > dataManager.getHighScore()
 
@@ -492,7 +597,8 @@ fun GameScreen(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
                                 modifier = Modifier
@@ -527,7 +633,6 @@ fun GameScreen(
                                         dataManager.saveHighScore(score)
                                         dataManager.saveLastScore(score)
 
-                                        // YENİ: Tekrar Dene dendiğinde her şeyi sıfırla
                                         score = 0
                                         collectedCoins = 0
                                         charY = groundLevel

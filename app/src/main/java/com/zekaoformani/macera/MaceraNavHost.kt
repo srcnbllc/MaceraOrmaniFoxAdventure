@@ -60,7 +60,7 @@ fun MaceraNavHost(
             )
         }
 
-        // 2. TUTORIAL (EĞİTİM EKRANI)
+        // 2. TUTORIAL
         composable(Screen.Tutorial.route) {
             TutorialScreen(
                 characterId = 1,
@@ -73,22 +73,19 @@ fun MaceraNavHost(
             )
         }
 
-        // 3. KARAKTER SEÇİMİ (Mağaza)
+        // 3. KARAKTER SEÇİMİ
         composable(Screen.CharacterSelection.route) {
             CharacterSelectionScreen(
                 onBackClicked = { navController.popBackStack() },
                 onStartAdventure = { characterId: Int ->
                     gameViewModel.selectCharacter(characterId)
-
-                    // GÜNCELLEME: Bölüm seçimi atlandı, doğrudan oyuna (1. Hız seviyesi ile) giriliyor!
+                    // Doğrudan oyuna yönlendir
                     navController.navigate("game_screen/$characterId/1")
                 }
             )
         }
 
-        // DİKKAT: 4. BÖLÜM SEÇİM EKRANI (ChapterSelectionScreen) BURADAN TAMAMEN KALDIRILDI
-
-        // 5. OYUN EKRANI
+        // 4. OYUN EKRANI
         composable(
             route = "game_screen/{characterId}/{chapterId}",
             arguments = listOf(
@@ -103,29 +100,24 @@ fun MaceraNavHost(
                 characterId = charId,
                 chapterId = chapId,
                 onNavigateBack = {
-                    // Oyundan çıkınca Ana Menüye dönsün istersen popUpTo kullanabiliriz
-                    // Şimdilik standart geri gitme (Karakter Seçimine döner)
                     navController.popBackStack()
                 },
                 onLevelCompleted = { _, _, _ ->
-                    // Sonsuz koşuda level bitme durumu olmadığı için burası boş bırakıldı
+                    // Sonsuz koşu için gerekirse buraya mantık eklenebilir
                 }
             )
         }
 
-        // 6. SKORLAR TABLOSU
         composable(Screen.Leaderboard.route) {
-            val perLevel = com.zekaoformani.macera.data.models.levels.map { lvl ->
-                Triple(lvl.id, prefs.getLevelBestScore(lvl.id), prefs.getLevelStars(lvl.id))
-            }
             LeaderboardScreen(
                 playerScore = totalScore,
-                perLevelBest = perLevel,
+                // T tipini burada açıkça belirtiyoruz:
+                perLevelBest = emptyList<Triple<Int, Int, Int>>(),
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
-        // 7. ROZETLER
+        // 6. ROZETLER
         composable(Screen.BadgePool.route) {
             BadgePoolScreen(
                 badges = prefs.getBadges(),

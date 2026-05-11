@@ -19,15 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.zekaoformani.macera.R
 import com.zekaoformani.macera.data.DataManager
+import com.zekaoformani.macera.data.SoundManager
 
 @Composable
 fun MainMenuScreen(
@@ -40,13 +44,34 @@ fun MainMenuScreen(
     val context = LocalContext.current
     val dataManager = remember { DataManager(context) }
 
+    // --- SES VE YAŞAM DÖNGÜSÜ YÖNETİMİ EKLENDİ ---
+    val soundManager = remember { SoundManager.getInstance(context) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var totalCoins by remember { mutableIntStateOf(0) }
-    var highScore by remember { mutableIntStateOf(0) } // YENİ: En yüksek skor state'i
+    var highScore by remember { mutableIntStateOf(0) }
 
     // Ekran her yüklendiğinde kasa verilerini güncelle
     LaunchedEffect(Unit) {
         totalCoins = dataManager.getTotalCoins()
-        highScore = dataManager.getHighScore() // YENİ: Rekoru çek
+        highScore = dataManager.getHighScore()
+    }
+
+    // --- MÜZİK KONTROL BEKÇİSİ ---
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                // Ekrana dönüldüğünde veya kilit açıldığında müziği başlat
+                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic(R.raw.orman_muzigi)
+                // Ekran kapandığında veya başka sayfaya geçildiğinde durdur
+                Lifecycle.Event.ON_PAUSE -> soundManager.stopBackgroundMusic()
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -104,7 +129,7 @@ fun MainMenuScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
 
-            // YENİ: EN YÜKSEK SKOR TABELASI
+            // EN YÜKSEK SKOR TABELASI
             Surface(
                 color = Color(0xFF4E342E).copy(alpha = 0.9f),
                 shape = RoundedCornerShape(12.dp),

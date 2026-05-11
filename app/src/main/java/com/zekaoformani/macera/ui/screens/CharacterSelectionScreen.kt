@@ -30,12 +30,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -43,6 +46,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.zekaoformani.macera.R
 import com.zekaoformani.macera.data.DataManager
+import com.zekaoformani.macera.data.SoundManager
 
 data class HeroSelectionData(
     val id: Int,
@@ -61,24 +65,36 @@ fun CharacterSelectionScreen(
 ) {
     val context = LocalContext.current
     val dataManager = remember { DataManager(context) }
+
+    // --- SES VE YAŞAM DÖNGÜSÜ YÖNETİMİ ---
+    val soundManager = remember { SoundManager.getInstance(context) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     var currentCoins by remember { mutableIntStateOf(dataManager.getTotalCoins()) }
 
-    val characterPrices = mapOf(
-        1 to 0,
-        2 to 750,
-        3 to 1500
-    )
+    // --- MÜZİK KONTROL BEKÇİSİ ---
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                // Ekrana girildiğinde veya kilit açıldığında müzik başlar
+                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic(R.raw.orman_muzigi)
+                // Başka ekrana geçildiğinde veya ekran kapatıldığında durur
+                Lifecycle.Event.ON_PAUSE -> soundManager.stopBackgroundMusic()
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    val characterPrices = mapOf(1 to 0, 2 to 750, 3 to 1500)
 
     val imageLoader = remember {
-        ImageLoader.Builder(context)
-            .components {
-                if (SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
-                }
-            }
-            .build()
+        ImageLoader.Builder(context).components {
+            if (SDK_INT >= 28) add(ImageDecoderDecoder.Factory()) else add(GifDecoder.Factory())
+        }.build()
     }
 
     val heroList = listOf(
@@ -100,9 +116,7 @@ fun CharacterSelectionScreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(R.drawable.karakter_menu)
-                .build(),
+            model = ImageRequest.Builder(context).data(R.drawable.karakter_menu).build(),
             contentDescription = "Karakter Seçim Arka Planı",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -118,13 +132,12 @@ fun CharacterSelectionScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // ÜST BAR: DÜZELTİLEN KISIM
+            // ÜST BAR
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                // Sola Dayalı Geri Butonu
                 IconButton(
                     onClick = onBackClicked,
                     modifier = Modifier
@@ -134,7 +147,6 @@ fun CharacterSelectionScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "Geri", tint = Color.White)
                 }
 
-                // Tam Ortalanmış Başlık
                 Text(
                     text = "KAHRAMANINI SEÇ",
                     color = Color(0xFFFFD700),
@@ -144,7 +156,6 @@ fun CharacterSelectionScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
 
-                // Sağa Dayalı Altın Göstergesi (Bozulma engellendi)
                 Row(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
@@ -171,6 +182,7 @@ fun CharacterSelectionScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // KARAKTER SEÇİCİ
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -204,9 +216,8 @@ fun CharacterSelectionScreen(
 
                     AnimatedContent(
                         targetState = currentHero,
-                        transitionSpec = {
-                            fadeIn(tween(300)) togetherWith fadeOut(tween(300))
-                        }, label = "char_anim"
+                        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                        label = "char_anim"
                     ) { char ->
                         Box(contentAlignment = Alignment.Center) {
                             AsyncImage(
@@ -217,7 +228,6 @@ fun CharacterSelectionScreen(
                                     .size(240.dp)
                                     .offset(y = (20 + charFloatY).dp),
                                 contentScale = ContentScale.Fit,
-                                // DÜZELTİLEN KISIM: Gri kareyi önlemek için Modulate kullanıldı
                                 colorFilter = if (!isUnlocked) ColorFilter.tint(Color.Gray, androidx.compose.ui.graphics.BlendMode.Modulate) else null
                             )
 
@@ -246,6 +256,7 @@ fun CharacterSelectionScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // BİLGİ PANELİ
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
