@@ -39,7 +39,8 @@ fun MainMenuScreen(
     onNavigateToCharacterSelection: () -> Unit,
     onNavigateToLeaderboard: () -> Unit,
     onNavigateToBadges: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onNavigateToCamp: () -> Unit
 ) {
     val context = LocalContext.current
     val dataManager = remember { DataManager(context) }
@@ -150,6 +151,16 @@ fun MainMenuScreen(
                 text = "MACERAYA BAŞLA",
                 icon = Icons.Default.PlayArrow,
                 onClick = onNavigateToCharacterSelection,
+                isBig = true
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // KAMP BUTONU DÜZELTİLDİ (Artık diğerleriyle aynı tasarımda)
+            WoodenMenuButton(
+                text = "Gelişim Vadisi",
+                icon = Icons.Default.LocalFireDepartment, // Kamp ateşi ikonu
+                onClick = onNavigateToCamp,
                 isBig = true
             )
 

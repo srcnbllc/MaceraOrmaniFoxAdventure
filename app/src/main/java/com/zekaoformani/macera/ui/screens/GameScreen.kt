@@ -43,6 +43,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.zekaoformani.macera.R
 import com.zekaoformani.macera.data.DataManager
+import com.zekaoformani.macera.data.GamePreferences
 import com.zekaoformani.macera.data.SoundManager
 import com.zekaoformani.macera.data.models.characters
 import kotlinx.coroutines.delay
@@ -67,6 +68,7 @@ fun GameScreen(
 ) {
     val context = LocalContext.current
     val dataManager = remember { DataManager(context) }
+    val gamePrefs = remember { GamePreferences(context) }
     val soundManager = remember { SoundManager.getInstance(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -85,7 +87,7 @@ fun GameScreen(
 
     var isPlaying by remember { mutableStateOf(false) }
     var isGameOver by remember { mutableStateOf(false) }
-    var isPaused by remember { mutableStateOf(false) } // YENİ: Duraklatma State'i
+    var isPaused by remember { mutableStateOf(false) }
 
     var score by remember { mutableIntStateOf(0) }
     var collectedCoins by remember { mutableIntStateOf(0) }
@@ -103,9 +105,16 @@ fun GameScreen(
     var coins by remember { mutableStateOf(listOf<Coin>()) }
     var birds by remember { mutableStateOf(listOf<Decoration>()) }
 
-    // YETENEK (KALKAN) SİSTEMİ
-    val hasShieldAbility = heroData.durabilityStars >= 4
-    var isShieldUsed by remember { mutableStateOf(false) }
+    // --- KAMP YETENEK SİSTEMİ ENTEGRASYONU ---
+    val baseShields = if (heroData.durabilityStars >= 4) 1 else 0
+    val maxShieldUses = baseShields + gamePrefs.getTentLevel() // Çadır seviyesi kalkan hakkı ekler
+
+    // YENİ: Kamp ateşi artık boolean değil, seviye (Int) tutuyor
+    val campfireLevel = gamePrefs.getCampfireLevel()
+    val dummyLevel = gamePrefs.getDummyLevel() // Eğitim kuklası altın toplama menzilini uzatır
+
+    val hasShieldAbility = maxShieldUses > 0
+    var shieldUsesLeft by remember { mutableIntStateOf(maxShieldUses) } // Kalan kalkan sayısı
     var isShieldActive by remember { mutableStateOf(false) }
     var shieldTimer by remember { mutableIntStateOf(0) }
 
@@ -153,7 +162,6 @@ fun GameScreen(
         }
     }
 
-    // OYUN İÇİ DURUMLARA GÖRE MÜZİK TETİKLEYİCİ
     LaunchedEffect(isPlaying, isGameOver, isPaused) {
         if (isPlaying && !isGameOver && !isPaused) {
             soundManager.playBackgroundMusic(R.raw.orman_muzigi)
@@ -167,7 +175,6 @@ fun GameScreen(
         while (isPlaying) {
             delay(16)
 
-            // YETENEK SAYAÇLARI KONTROLÜ
             if (isInvincible) {
                 invincibilityTimer--
                 if (invincibilityTimer <= 0) isInvincible = false
@@ -240,10 +247,17 @@ fun GameScreen(
             val cBottom = charY + 10f
             val cTop = charY + (if (isSliding) charH - 10f else charH - 25f)
 
+            // --- KUKLA YETENEĞİ (MIKNATIS ETKİSİ) ---
+            val magnetBonus = dummyLevel * 50f // Kukla seviyesi başına altınları 50px uzaktan çeker
+            val mLeft = cLeft - magnetBonus
+            val mRight = cRight + magnetBonus
+            val mBottom = cBottom - magnetBonus
+            val mTop = cTop + magnetBonus
+
             val collectedThisFrame = currentCoins.filter { coin ->
                 val oLeft = coin.x; val oRight = coin.x + coin.width
                 val oBottom = coin.y; val oTop = coin.y + coin.height
-                cLeft < oRight && cRight > oLeft && cBottom < oTop && cTop > oBottom
+                mLeft < oRight && mRight > oLeft && mBottom < oTop && mTop > oBottom
             }
             if (collectedThisFrame.isNotEmpty()) {
                 collectedCoins += collectedThisFrame.size
@@ -372,17 +386,18 @@ fun GameScreen(
                 ) {
                     val shieldColor = when {
                         isShieldActive -> Color(0xFF69F0AE)
-                        isShieldUsed -> Color.Gray.copy(alpha = 0.5f)
+                        shieldUsesLeft <= 0 -> Color.Gray.copy(alpha = 0.5f) // Kalkan hakkı bittiyse gri
                         else -> Color(0xFF29B6F6)
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = {
-                                if (!isShieldUsed && !isShieldActive) {
-                                    isShieldUsed = true
+                                if (shieldUsesLeft > 0 && !isShieldActive) {
+                                    shieldUsesLeft-- // Kalkan hakkını düşür
                                     isShieldActive = true
-                                    shieldTimer = 1200
+                                    // YENİ: 1200 frame (20sn) + Her seviye için ekstra 300 frame (5sn)
+                                    shieldTimer = 1200 + (campfireLevel * 300)
                                 }
                             },
                             modifier = Modifier
@@ -398,6 +413,7 @@ fun GameScreen(
                             )
                         }
 
+                        // Kalkan aktifse geri sayımı, değilse kalan kalkan sayısını gösterir
                         if (isShieldActive) {
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
@@ -407,18 +423,26 @@ fun GameScreen(
                                 fontWeight = FontWeight.Black,
                                 style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 10f))
                             )
+                        } else if (shieldUsesLeft > 0) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "x$shieldUsesLeft",
+                                color = Color(0xFF29B6F6),
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                style = TextStyle(shadow = Shadow(Color.Black, blurRadius = 8f))
+                            )
                         }
                     }
                 }
             }
 
-            // --- ÜST PANEL (DURAKLAT BUTONU EKLENDİ) ---
+            // --- ÜST PANEL ---
             Row(
                 modifier = Modifier.fillMaxWidth().padding(16.dp).safeDrawingPadding(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // ŞIK PAUSE BUTONU
                 IconButton(
                     onClick = {
                         if (isPlaying && !isGameOver) {
@@ -449,7 +473,7 @@ fun GameScreen(
                 }
             }
 
-            // --- YENİ: DURAKLATILDI MENÜSÜ ---
+            // --- DURAKLATILDI MENÜSÜ ---
             if (isPaused) {
                 Box(
                     modifier = Modifier.fillMaxSize().background(Color.Black.copy(0.85f)),
@@ -483,7 +507,6 @@ fun GameScreen(
 
                         Spacer(modifier = Modifier.height(32.dp))
 
-                        // DEVAM ET BUTONU
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -502,7 +525,6 @@ fun GameScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // ANA MENÜYE DÖN BUTONU
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -639,7 +661,9 @@ fun GameScreen(
                                         obstacles = emptyList()
                                         coins = emptyList()
                                         birds = emptyList()
-                                        isShieldUsed = false
+
+                                        // TEKRAR BAŞLARKEN KALKAN HAKLARINI YENİLE (Kamp özelliği eklentisi)
+                                        shieldUsesLeft = maxShieldUses
                                         isShieldActive = false
                                         shieldTimer = 0
                                         isInvincible = false

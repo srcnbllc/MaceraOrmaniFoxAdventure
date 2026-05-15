@@ -18,6 +18,7 @@ import com.zekaoformani.macera.ui.screens.*
 import com.zekaoformani.macera.ui.components.SettingsOverlay
 import com.zekaoformani.macera.ui.viewmodel.GameViewModel
 import com.zekaoformani.macera.ui.viewmodel.GameViewModelFactory
+import com.zekaoformani.macera.data.DataManager
 
 @Composable
 fun MaceraNavHost(
@@ -27,6 +28,10 @@ fun MaceraNavHost(
 ) {
     val context = LocalContext.current
     val prefs = remember { GamePreferences(context) }
+
+    // EKSİK OLAN SATIR BURASI: dataManager nesnesini sayfaya tanıtıyoruz
+    val dataManager = remember { DataManager(context) }
+
     val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(prefs))
 
     // Ayarlar State'leri
@@ -48,6 +53,7 @@ fun MaceraNavHost(
     ) {
 
         // 1. ANA MENÜ
+        // 1. ANA MENÜ
         composable(Screen.MainMenu.route) {
             MainMenuScreen(
                 onNavigateToCharacterSelection = {
@@ -56,7 +62,9 @@ fun MaceraNavHost(
                 },
                 onNavigateToLeaderboard = { navController.navigate(Screen.Leaderboard.route) },
                 onNavigateToBadges = { navController.navigate(Screen.BadgePool.route) },
-                onOpenSettings = { showSettings = true }
+                onOpenSettings = { showSettings = true },
+                // YENİ EKLENEN SATIR BURASI:
+                onNavigateToCamp = { navController.navigate("camp_screen") }
             )
         }
 
@@ -121,6 +129,20 @@ fun MaceraNavHost(
         composable(Screen.BadgePool.route) {
             BadgePoolScreen(
                 badges = prefs.getBadges(),
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // KAMP EKRANI
+        // KAMP EKRANI
+        composable("camp_screen") {
+            CampScreen(
+                gamePrefs = prefs,
+                dataManager = dataManager, // EKLENDİ: Ekran doğrudan buraya erişecek
+                onSpendCoins = { amount ->
+                    // Harcama işlemi direkt DataManager'ın orijinal sistemi üzerinden yapılacak
+                    dataManager.spendCoins(amount)
+                },
                 onNavigateBack = { navController.popBackStack() }
             )
         }

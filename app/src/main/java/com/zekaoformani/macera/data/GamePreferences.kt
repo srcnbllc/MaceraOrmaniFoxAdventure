@@ -92,7 +92,47 @@ class GamePreferences(context: Context) {
         prefs.edit().putInt("total_score", newScore).apply()
         _totalScoreFlow.value = newScore
     }
-    
+
     // Legacy support for addScore if needed
     fun addScore(points: Int) = updateScore(points)
+
+    // =================================================================
+    // KAMP VE GELİŞTİRME SİSTEMİ (Yeni Eklentiler)
+    // =================================================================
+
+    private val KEY_TENT_LEVEL = "tent_level"
+    private val KEY_CAMPFIRE_LEVEL = "campfire_level" // YENİ: Artık seviye tutuyor
+    private val KEY_DUMMY_LEVEL = "dummy_level"
+
+    fun getTentLevel(): Int = prefs.getInt(KEY_TENT_LEVEL, 0)
+
+    fun setTentLevel(level: Int) {
+        val safeLevel = level.coerceIn(0, 2)
+        prefs.edit().putInt(KEY_TENT_LEVEL, safeLevel).apply()
+    }
+
+    // --- KAMP ATEŞİ SEVİYE SİSTEMİ (Değişen Kısım) ---
+    fun getCampfireLevel(): Int = prefs.getInt(KEY_CAMPFIRE_LEVEL, 0)
+
+    fun setCampfireLevel(level: Int) {
+        prefs.edit().putInt(KEY_CAMPFIRE_LEVEL, level).apply()
+    }
+
+    fun getCharacterShieldUpgradeLevel(characterId: Int): Int =
+        prefs.getInt("shield_upgrade_char_$characterId", 0)
+
+    fun upgradeCharacterShield(characterId: Int): Boolean {
+        val currentLevel = getCharacterShieldUpgradeLevel(characterId)
+        if (currentLevel < 8) {
+            prefs.edit().putInt("shield_upgrade_char_$characterId", currentLevel + 1).apply()
+            return true
+        }
+        return false
+    }
+
+    fun getDummyLevel(): Int = prefs.getInt(KEY_DUMMY_LEVEL, 0)
+
+    fun setDummyLevel(level: Int) {
+        prefs.edit().putInt(KEY_DUMMY_LEVEL, level).apply()
+    }
 }

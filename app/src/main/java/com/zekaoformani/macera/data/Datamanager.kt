@@ -13,14 +13,25 @@ class DataManager(context: Context) {
         prefs.edit().putInt("total_coins", current + amount).apply()
     }
 
-    // Karakter satın alırken altın harcama
+    // Karakter satın alırken altın harcama (Eski sistemin - KORUNDU)
     fun spendCoins(amount: Int): Boolean {
-        val current = getTotalCoins()
+        val current = getTotalCoins() // "total_coins" okur
         if (current >= amount) {
             prefs.edit().putInt("total_coins", current - amount).apply()
-            return true // Satın alma başarılı
+            return true
         }
-        return false // Yetersiz bakiye
+        return false
+    }
+
+    // --- YENİ KAMP SİSTEMİ İÇİN HARCAMA FONKSİYONU ---
+    // (Sınıfın içine alındı, artık NavHost bunu kolayca bulacak)
+    fun spendCoins(gamePrefs: GamePreferences, amount: Int): Boolean {
+        val currentCoins = gamePrefs.totalScoreFlow.value
+        if (currentCoins >= amount) {
+            gamePrefs.updateScore(-amount)
+            return true
+        }
+        return false
     }
 
     // --- SKOR SİSTEMİ ---
