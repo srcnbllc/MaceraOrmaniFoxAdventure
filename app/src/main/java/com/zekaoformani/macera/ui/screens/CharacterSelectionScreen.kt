@@ -89,7 +89,7 @@ fun CharacterSelectionScreen(
         }
     }
 
-    val characterPrices = mapOf(1 to 0, 2 to 750, 3 to 15)
+    val characterPrices = mapOf(1 to 0, 2 to 750, 3 to 1500)
 
     val imageLoader = remember {
         ImageLoader.Builder(context).components {
