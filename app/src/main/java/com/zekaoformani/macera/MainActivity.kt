@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.zekaoformani.macera.ui.theme.MaceraOrmaniTheme
+import com.zekaoformani.macera.MaceraNavHost
 
 class MainActivity : ComponentActivity() {
 

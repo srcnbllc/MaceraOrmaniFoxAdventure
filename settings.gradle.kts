@@ -1,14 +1,9 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
+        google() // Filtreleri kaldırıp temizce Google deposunu tanımlıyoruz
+        mavenCentral() // JetBrains eklentileri asıl buradan beslenir
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") // JetBrains resmi Compose deposu
     }
 }
 plugins {
@@ -20,8 +15,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
 rootProject.name = "MaceraOrmaniFoxAdventure"
 include(":app")
+include(":shared")
