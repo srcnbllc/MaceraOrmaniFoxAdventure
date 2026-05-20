@@ -1,11 +1,12 @@
 pluginManagement {
     repositories {
-        google() // Filtreleri kaldırıp temizce Google deposunu tanımlıyoruz
-        mavenCentral() // JetBrains eklentileri asıl buradan beslenir
+        google()
+        mavenCentral()
         gradlePluginPortal()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") // JetBrains resmi Compose deposu
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
+
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
 }
@@ -13,12 +14,10 @@ plugins {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-
         google()
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental") // Bazı navigation bağımlılıkları burayı ister
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") // BU SATIR ÇOK ÖNEMLİ
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
     }
 }
 
