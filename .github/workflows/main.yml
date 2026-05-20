@@ -1,21 +1,21 @@
-name: iOS Bulut Derleme Testi (0 Maliyet)
+name: iOS Bulut Derleme Testi
 
 on:
   push:
-    branches: ["ios-deneme-branch"] # Sen main dâlına kod pushladığında otomatik çalışır
+    branches: [ "ios-deneme-branch" ]
+  workflow_dispatch:
 
 jobs:
   build-ios:
-    runs-on: macos-latest # GitHub bizim için arkada ücretsiz bir Mac açıyor
-
+    runs-on: macos-latest
     steps:
       - name: Depoyu Klonla
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Java Altyapısını Kur (Android bileşenleri için)
-        uses: actions/setup-java@v3
+      - name: Java Altyapısını Kur
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Xcode Sürümünü Ayarla
@@ -24,6 +24,11 @@ jobs:
       - name: Gradle Yetkisini Ayarla
         run: chmod +x gradlew
 
+      # 1. Aşama: Derlemeyi dene
       - name: iOS Framework Derlemesini Başlat
-        run: ./gradlew :shared:linkReleaseFrameworkIosX64
-        # Not: Bu komut ortak katmandaki kodlarını Apple makine koduna çevirir.
+        run: ./gradlew :shared:assembleDebugFrameworkIosArm64 || ./gradlew :shared:assembleDebugFrameworkIosX64
+
+      # 2. Aşama: Eğer üstteki komut başarısız olursa, görev isimlerini listele (Debug için)
+      - name: Görev İsimlerini Listele (Hata Alırsan Buraya Bak)
+        if: failure()
+        run: ./gradlew :shared:tasks --group=build
