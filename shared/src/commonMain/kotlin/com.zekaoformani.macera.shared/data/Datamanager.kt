@@ -1,30 +1,29 @@
 package com.zekaoformani.macera.data
 
-import android.content.Context
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 
-class DataManager(context: Context) {
-    private val prefs = context.getSharedPreferences("MaceraOrmaniPrefs", Context.MODE_PRIVATE)
+class DataManager(private val settings: Settings = Settings()) {
 
     // --- ALTIN SİSTEMİ ---
-    fun getTotalCoins(): Int = prefs.getInt("total_coins", 0)
+    fun getTotalCoins(): Int = settings.getInt("total_coins", 0)
 
     fun addCoins(amount: Int) {
         val current = getTotalCoins()
-        prefs.edit().putInt("total_coins", current + amount).apply()
+        settings["total_coins"] = current + amount
     }
 
-    // Karakter satın alırken altın harcama (Eski sistemin - KORUNDU)
+    // Karakter satın alırken altın harcama
     fun spendCoins(amount: Int): Boolean {
-        val current = getTotalCoins() // "total_coins" okur
+        val current = getTotalCoins()
         if (current >= amount) {
-            prefs.edit().putInt("total_coins", current - amount).apply()
+            settings["total_coins"] = current - amount
             return true
         }
         return false
     }
 
     // --- YENİ KAMP SİSTEMİ İÇİN HARCAMA FONKSİYONU ---
-    // (Sınıfın içine alındı, artık NavHost bunu kolayca bulacak)
     fun spendCoins(gamePrefs: GamePreferences, amount: Int): Boolean {
         val currentCoins = gamePrefs.totalScoreFlow.value
         if (currentCoins >= amount) {
@@ -32,41 +31,5 @@ class DataManager(context: Context) {
             return true
         }
         return false
-    }
-
-    // --- SKOR SİSTEMİ ---
-    fun getHighScore(): Int = prefs.getInt("high_score", 0)
-
-    fun saveHighScore(score: Int) {
-        val currentHigh = getHighScore()
-        if (score > currentHigh) {
-            prefs.edit().putInt("high_score", score).apply()
-        }
-    }
-
-    // --- SON 10 SKOR SİSTEMİ (YENİ EKLENDİ) ---
-    fun getLastScores(): List<Int> {
-        val scoreStr = prefs.getString("last_scores", "") ?: ""
-        if (scoreStr.isEmpty()) return emptyList()
-        return scoreStr.split(",").mapNotNull { it.toIntOrNull() }
-    }
-
-    fun saveLastScore(score: Int) {
-        val scores = getLastScores().toMutableList()
-        scores.add(0, score) // Yeni skoru listenin en başına ekle
-        val limitedScores = scores.take(10) // Sadece son 10 skoru tut
-        prefs.edit().putString("last_scores", limitedScores.joinToString(",")).apply()
-    }
-
-    // --- KARAKTER KİLİT SİSTEMİ ---
-    // Tilki (ID: 1) varsayılan olarak her zaman açıktır.
-    fun isCharacterUnlocked(characterId: Int): Boolean {
-        if (characterId == 1) return true
-        return prefs.getBoolean("unlocked_char_$characterId", false)
-    }
-
-    // Karakterin kilidini kalıcı olarak açar
-    fun unlockCharacter(characterId: Int) {
-        prefs.edit().putBoolean("unlocked_char_$characterId", true).apply()
     }
 }

@@ -1,6 +1,5 @@
 package com.zekaoformani.macera.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,23 +14,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha // Hata aldığın kritik import burası
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import coil3.compose.AsyncImage
 import com.zekaoformani.macera.data.DataManager
 import com.zekaoformani.macera.data.GamePreferences
+import com.zekaoformani.macera.showToast
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.item_coin
+import maceraormanifoxadventure.shared.generated.resources.menu_arkaplan
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,8 +41,6 @@ fun CampScreen(
     onSpendCoins: (Int) -> Boolean,
     onNavigateBack: () -> Unit
 ) {
-    val context = LocalContext.current
-
     // Takip Edilen Seviye ve Altın Bilgileri
     var totalCoins by remember { mutableIntStateOf(dataManager.getTotalCoins()) }
     var tentLevel by remember { mutableIntStateOf(gamePrefs.getTentLevel()) }
@@ -62,8 +60,8 @@ fun CampScreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         // 1. KATMAN: Ana menüyle uyumlu orman manzarası
-        AsyncImage(
-            model = ImageRequest.Builder(context).data(R.drawable.menu_arkaplan).build(),
+        Image(
+            painter = painterResource(Res.drawable.menu_arkaplan),
             contentDescription = "Oba Arkaplanı",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -105,7 +103,7 @@ fun CampScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.item_coin),
+                                painter = painterResource(Res.drawable.item_coin),
                                 contentDescription = "Altın",
                                 modifier = Modifier.size(24.dp)
                             )
@@ -150,9 +148,9 @@ fun CampScreen(
                             gamePrefs.setTentLevel(tentLevel + 1)
                             tentLevel = gamePrefs.getTentLevel()
                             totalCoins = dataManager.getTotalCoins()
-                            Toast.makeText(context, "Çadır Geliştirildi!", Toast.LENGTH_SHORT).show()
+                            showToast("Çadır Geliştirildi!")
                         } else {
-                            Toast.makeText(context, "Yetersiz Altın!", Toast.LENGTH_SHORT).show()
+                            showToast("Yetersiz Altın!")
                         }
                     }
                 )
@@ -173,9 +171,9 @@ fun CampScreen(
                             gamePrefs.setCampfireLevel(campfireLevel + 1)
                             campfireLevel = gamePrefs.getCampfireLevel()
                             totalCoins = dataManager.getTotalCoins()
-                            Toast.makeText(context, "Ateş Güçlendirildi!", Toast.LENGTH_SHORT).show()
+                            showToast("Ateş Güçlendirildi!")
                         } else {
-                            Toast.makeText(context, "Yetersiz Altın!", Toast.LENGTH_SHORT).show()
+                            showToast("Yetersiz Altın!")
                         }
                     }
                 )
@@ -195,9 +193,9 @@ fun CampScreen(
                             gamePrefs.setDummyLevel(dummyLevel + 1)
                             dummyLevel = gamePrefs.getDummyLevel()
                             totalCoins = dataManager.getTotalCoins()
-                            Toast.makeText(context, "Kukla Geliştirildi!", Toast.LENGTH_SHORT).show()
+                            showToast("Kukla Geliştirildi!")
                         } else {
-                            Toast.makeText(context, "Yetersiz Altın!", Toast.LENGTH_SHORT).show()
+                            showToast("Yetersiz Altın!")
                         }
                     }
                 )
@@ -323,7 +321,7 @@ fun GameUpgradePanel(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("KİLİTLİ", color = Color.LightGray, fontWeight = FontWeight.Black, fontSize = 16.sp)
                     } else {
-                        Image(painter = painterResource(id = R.drawable.item_coin), contentDescription = null, modifier = Modifier.size(24.dp))
+                        Image(painter = painterResource(Res.drawable.item_coin), contentDescription = null, modifier = Modifier.size(24.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = "$cost", color = Color(0xFFFFD700), fontWeight = FontWeight.Black, fontSize = 20.sp)
                         Spacer(modifier = Modifier.width(16.dp))

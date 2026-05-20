@@ -26,11 +26,9 @@ fun MaceraNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Screen.MainMenu.route
 ) {
-    val context = LocalContext.current
-    val prefs = remember { GamePreferences(context) }
-
-    // EKSİK OLAN SATIR BURASI: dataManager nesnesini sayfaya tanıtıyoruz
-    val dataManager = remember { DataManager(context) }
+    // KMP uyumlu instantiate
+    val prefs = remember { GamePreferences() }
+    val dataManager = remember { DataManager() }
 
     val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(prefs))
 

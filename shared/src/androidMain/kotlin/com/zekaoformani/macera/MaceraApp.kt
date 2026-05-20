@@ -2,28 +2,30 @@ package com.zekaoformani.macera
 
 import android.app.Application
 import android.os.Build
-import coil.ImageLoader
-import android.content.Context
-import coil.ImageLoaderFactory
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.gif.GifDecoder
+import coil3.gif.AnimatedImageDecoder
 import com.zekaoformani.macera.data.GamePreferences
+import com.zekaoformani.macera.data.SoundManager
 
-class MaceraApp : Application(), ImageLoaderFactory {
+class MaceraApp : Application(), SingletonImageLoader.Factory {
 
     lateinit var preferences: GamePreferences
         private set
 
     override fun onCreate() {
         super.onCreate()
-        preferences = GamePreferences(this)
+        GlobalContext.init(this)
+        preferences = GamePreferences()
+        SoundManager.init(this)
     }
 
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this)
+    override fun newImageLoader(context: coil3.PlatformContext): ImageLoader {
+        return ImageLoader.Builder(context)
             .components {
                 if (Build.VERSION.SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
+                    add(AnimatedImageDecoder.Factory())
                 } else {
                     add(GifDecoder.Factory())
                 }
