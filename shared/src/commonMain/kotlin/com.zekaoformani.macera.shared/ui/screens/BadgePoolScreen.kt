@@ -1,6 +1,5 @@
 package com.zekaoformani.macera.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -30,16 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import coil3.compose.AsyncImage
 import com.zekaoformani.macera.data.DataManager
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.menu_arkaplan
 
 // Rozet modelimiz
 data class BadgeItem(
@@ -52,11 +49,9 @@ data class BadgeItem(
 
 @Composable
 fun BadgePoolScreen(
-    badges: Any? = null, // NavHost'taki eski parametre hata vermesin diye Any? yaptık
     onNavigateBack: () -> Unit
 ) {
-    val context = LocalContext.current
-    val dataManager = remember { DataManager(context) }
+    val dataManager = remember { DataManager() }
 
     // Canlı verileri çekiyoruz
     val highScore = remember { dataManager.getHighScore() }
@@ -76,11 +71,9 @@ fun BadgePoolScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // Arka planı menu_arkaplan ile değiştirdik ki orman teması korunsun
+        // Arka plan
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(R.drawable.menu_arkaplan)
-                .build(),
+            model = Res.drawable.menu_arkaplan,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize().blur(12.dp),

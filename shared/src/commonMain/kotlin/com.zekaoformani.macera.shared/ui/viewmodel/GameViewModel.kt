@@ -1,7 +1,6 @@
 package com.zekaoformani.macera.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.zekaoformani.macera.data.GamePreferences
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,15 +37,5 @@ class GameViewModel(private val preferences: GamePreferences) : ViewModel() {
         viewModelScope.launch {
             preferences.updateScore(points)
         }
-    }
-}
-
-class GameViewModelFactory(private val preferences: GamePreferences) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return GameViewModel(preferences) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

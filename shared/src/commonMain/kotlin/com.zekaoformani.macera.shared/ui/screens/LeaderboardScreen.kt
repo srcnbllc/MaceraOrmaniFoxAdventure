@@ -1,6 +1,5 @@
 package com.zekaoformani.macera.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,36 +23,29 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import coil3.compose.AsyncImage
 import com.zekaoformani.macera.data.DataManager
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.menu_arkaplan
 
 @Composable
 fun LeaderboardScreen(
-    // Eski parametreleri hata vermesin diye tuttuk ama artık DataManager kullanıyoruz
     playerScore: Int = 0,
     perLevelBest: Any? = null,
     onNavigateBack: () -> Unit = {}
 ) {
-    val context = LocalContext.current
-    val dataManager = remember { DataManager(context) }
+    val dataManager = remember { DataManager() }
 
     // Verileri çekiyoruz
     val lastScores = remember { dataManager.getLastScores() }
     val highScore = remember { dataManager.getHighScore() }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Arka planı menu_arkaplan ile değiştirdik ki orman teması korunsun
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(R.drawable.menu_arkaplan)
-                .build(),
+            model = Res.drawable.menu_arkaplan,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize().blur(12.dp),
@@ -164,11 +156,10 @@ fun LeaderboardScreen(
                             }
                         } else {
                             itemsIndexed(lastScores) { index, score ->
-                                // İlk 3 skor için Altın, Gümüş, Bronz renkleri
                                 val rankColor = when (index) {
-                                    0 -> Color(0xFFFFD700) // Altın
-                                    1 -> Color(0xFFE0E0E0) // Gümüş
-                                    2 -> Color(0xFFCD7F32) // Bronz
+                                    0 -> Color(0xFFFFD700)
+                                    1 -> Color(0xFFE0E0E0)
+                                    2 -> Color(0xFFCD7F32)
                                     else -> Color.White.copy(alpha = 0.5f)
                                 }
 
@@ -186,7 +177,6 @@ fun LeaderboardScreen(
                                             .padding(16.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        // Sıra Numarası (1, 2, 3...)
                                         Surface(
                                             shape = CircleShape,
                                             color = rankColor.copy(alpha = 0.15f),
@@ -205,7 +195,6 @@ fun LeaderboardScreen(
 
                                         Spacer(modifier = Modifier.width(16.dp))
 
-                                        // Puan Metni
                                         Text(
                                             text = "Koşu Skoru",
                                             color = Color.White.copy(alpha = 0.8f),
@@ -214,7 +203,6 @@ fun LeaderboardScreen(
                                             modifier = Modifier.weight(1f)
                                         )
 
-                                        // Skor Değeri
                                         Text(
                                             text = "$score",
                                             color = Color.White,

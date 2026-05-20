@@ -1,6 +1,5 @@
 package com.zekaoformani.macera.ui.screens
 
-import android.os.Build.VERSION.SDK_INT
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -29,24 +28,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import coil3.compose.AsyncImage
 import com.zekaoformani.macera.data.DataManager
+import com.zekaoformani.macera.data.GamePreferences
 import com.zekaoformani.macera.data.SoundManager
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.DrawableResource
 
 data class HeroSelectionData(
     val id: Int,
@@ -55,7 +51,7 @@ data class HeroSelectionData(
     val speedStars: Int,
     val jumpStars: Int,
     val durabilityStars: Int,
-    val imageRes: Int
+    val imageRes: DrawableResource
 )
 
 @Composable
@@ -63,11 +59,11 @@ fun CharacterSelectionScreen(
     onBackClicked: () -> Unit = {},
     onStartAdventure: (characterId: Int) -> Unit = {}
 ) {
-    val context = LocalContext.current
-    val dataManager = remember { DataManager(context) }
+    val dataManager = remember { DataManager() }
+    val prefs = remember { GamePreferences() }
 
     // --- SES VE YAŞAM DÖNGÜSÜ YÖNETİMİ ---
-    val soundManager = remember { SoundManager.getInstance(context) }
+    val soundManager = remember { SoundManager.getInstance() }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var currentCoins by remember { mutableIntStateOf(dataManager.getTotalCoins()) }
@@ -76,9 +72,7 @@ fun CharacterSelectionScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                // Ekrana girildiğinde veya kilit açıldığında müzik başlar
-                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic(R.raw.orman_muzigi)
-                // Başka ekrana geçildiğinde veya ekran kapatıldığında durur
+                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic("orman_muzigi")
                 Lifecycle.Event.ON_PAUSE -> soundManager.stopBackgroundMusic()
                 else -> {}
             }
@@ -91,16 +85,10 @@ fun CharacterSelectionScreen(
 
     val characterPrices = mapOf(1 to 0, 2 to 750, 3 to 1500)
 
-    val imageLoader = remember {
-        ImageLoader.Builder(context).components {
-            if (SDK_INT >= 28) add(ImageDecoderDecoder.Factory()) else add(GifDecoder.Factory())
-        }.build()
-    }
-
     val heroList = listOf(
-        HeroSelectionData(1, "SWIFT FOX", "Dengeli ve kurnaz. Ormanın her köşesini bilir!", 4, 3, 2, R.drawable.fox),
-        HeroSelectionData(2, "CRAZY MONKEY", "Çevik ve çılgın! Herkesten daha yükseğe zıplar.", 5, 5, 1, R.drawable.monkey),
-        HeroSelectionData(3, "WILD TIGER", "Korkusuz ve güçlü! Karşısına çıkan engelleri rahatça parçalar.", 4, 2, 5, R.drawable.tigger)
+        HeroSelectionData(1, "SWIFT FOX", "Dengeli ve kurnaz. Ormanın her köşesini bilir!", 4, 3, 2, Res.drawable.fox),
+        HeroSelectionData(2, "CRAZY MONKEY", "Çevik ve çılgın! Herkesten daha yükseğe zıplar.", 5, 5, 1, Res.drawable.monkey),
+        HeroSelectionData(3, "WILD TIGER", "Korkusuz ve güçlü! Karşısına çıkan engelleri rahatça parçalar.", 4, 2, 5, Res.drawable.tigger)
     )
 
     var currentIndex by remember { mutableIntStateOf(0) }
@@ -116,7 +104,7 @@ fun CharacterSelectionScreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         AsyncImage(
-            model = ImageRequest.Builder(context).data(R.drawable.karakter_menu).build(),
+            model = Res.drawable.karakter_menu,
             contentDescription = "Karakter Seçim Arka Planı",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -164,7 +152,7 @@ fun CharacterSelectionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.item_coin),
+                        painter = painterResource(Res.drawable.item_coin),
                         contentDescription = "Altın",
                         modifier = Modifier.size(20.dp)
                     )
@@ -174,8 +162,7 @@ fun CharacterSelectionScreen(
                         color = Color(0xFFFFD700),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        softWrap = false
+                        maxLines = 1, softWrap = false
                     )
                 }
             }
@@ -222,7 +209,6 @@ fun CharacterSelectionScreen(
                         Box(contentAlignment = Alignment.Center) {
                             AsyncImage(
                                 model = char.imageRes,
-                                imageLoader = imageLoader,
                                 contentDescription = char.name,
                                 modifier = Modifier
                                     .size(240.dp)
@@ -278,7 +264,7 @@ fun CharacterSelectionScreen(
                     text = currentHero.description,
                     color = Color(0xFFFFD54F),
                     fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp)
                 )
 
@@ -328,14 +314,14 @@ fun CharacterSelectionScreen(
                             .border(3.dp, if (canAfford) Color.White else Color.LightGray, RoundedCornerShape(16.dp))
                             .clickable(enabled = canAfford) {
                                 if (dataManager.spendCoins(price)) {
-                                    dataManager.unlockCharacter(currentHero.id)
+                                    prefs.unlockCharacter(currentHero.id)
                                     currentCoins = dataManager.getTotalCoins()
                                 }
                             },
                         contentAlignment = Alignment.Center
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(painter = painterResource(id = R.drawable.item_coin), contentDescription = null, modifier = Modifier.size(24.dp))
+                            Image(painter = painterResource(Res.drawable.item_coin), contentDescription = null, modifier = Modifier.size(24.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = if (canAfford) "KİLİDİ AÇ ($price)" else "YETERSİZ ALTIN ($price)",

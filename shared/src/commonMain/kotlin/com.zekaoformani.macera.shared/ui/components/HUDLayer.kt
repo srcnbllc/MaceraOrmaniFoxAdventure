@@ -3,7 +3,6 @@ package com.zekaoformani.macera.ui.components
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Favorite
@@ -31,25 +29,23 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zekaoformani.macera.R
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HUDLayer(
-    title: String,
+    title: String = "",
     score: Int,
-    fruits: Int,
     lives: Int,
-    collectibleMax: Int,
+    shieldCount: Int = 0,
     isPaused: Boolean = false,
-    onNavigateBack: () -> Unit,
-    onJump: () -> Unit,
-    onPauseToggle: () -> Unit = {},
-    // D-Pad kontrolleri için
+    onJump: () -> Unit = {},
+    onPauseClick: () -> Unit = {},
     onMoveLeft: (Boolean) -> Unit = {},
     onMoveRight: (Boolean) -> Unit = {},
     showDpad: Boolean = true
@@ -57,18 +53,6 @@ fun HUDLayer(
     val haptic = LocalHapticFeedback.current
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Top HUD Gradient Background
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(130.dp)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Black.copy(alpha = 0.6f), Color.Transparent)
-                    )
-                )
-        )
-
         // Top HUD Elements
         Row(
             modifier = Modifier
@@ -83,35 +67,31 @@ fun HUDLayer(
                 IconButton(
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        onPauseToggle()
+                        onPauseClick()
                     },
                     modifier = Modifier.size(44.dp).clip(CircleShape).background(Color.White.copy(alpha=0.15f))
                 ) {
-                    Icon(Icons.Default.Pause, contentDescription = stringResource(R.string.cd_pause_btn), tint = Color.White)
+                    Icon(Icons.Default.Pause, contentDescription = stringResource(Res.string.cd_pause_btn), tint = Color.White)
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                // Bölüm Numarası/Adı (Genel Format)
                 Text(
                     text = title,
                     color = Color.White,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Black,
-                    style = TextStyle(shadow = Shadow(Color.Black.copy(alpha=0.5f), blurRadius = 4f))
+                    fontWeight = FontWeight.Black
                 )
             }
 
-            // Orta Üst: Canlar (Kalpler)
+            // Orta Üst: Canlar
             StatCapsule(icon = Icons.Default.Favorite, value = lives.toString(), color = Color(0xFFFF4B4B))
 
-            // Sağ Üst: Toplanan Obje
-            val objIcon = Icons.Default.Star
-            StatCapsule(icon = objIcon, value = "$fruits/$collectibleMax", color = Color(0xFFFFD700))
+            // Sağ Üst: Skor
+            StatCapsule(icon = Icons.Default.Star, value = score.toString(), color = Color(0xFFFFD700))
         }
 
         // --- CONTROLS LAYER ---
         if (!isPaused) {
             if (showDpad) {
-                // D-Pad Left/Right (Bottom Left)
                 Row(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -121,29 +101,29 @@ fun HUDLayer(
                     // Left Arrow
                     val leftInteraction = remember { MutableInteractionSource() }
                     val isLeftPressed by leftInteraction.collectIsPressedAsState()
-                    val leftScale by animateFloatAsState(targetValue = if (isLeftPressed) 0.85f else 1f, animationSpec = spring(stiffness = Spring.StiffnessLow), label = "lScale")
+                    val leftScale by animateFloatAsState(targetValue = if (isLeftPressed) 0.85f else 1f, label = "lScale")
                     
                     LaunchedEffect(isLeftPressed) { onMoveLeft(isLeftPressed) }
 
                     Box(
                         modifier = Modifier
-                            .size(72.dp) // Touch target büyütüldü
+                            .size(72.dp)
                             .graphicsLayer { scaleX = leftScale; scaleY = leftScale }
                             .clip(CircleShape)
-                            .background(Color.Black.copy(alpha = 0.4f)) // Opaklık %40 şeffaf overlay
+                            .background(Color.Black.copy(alpha = 0.4f))
                             .border(2.dp, Color.White.copy(alpha=0.2f), CircleShape)
                             .clickable(interactionSource = leftInteraction, indication = null) { 
                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove) 
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.cd_left_btn), tint = Color.White.copy(alpha=0.8f), modifier = Modifier.size(48.dp))
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(Res.string.cd_left_btn), tint = Color.White.copy(alpha=0.8f), modifier = Modifier.size(48.dp))
                     }
 
                     // Right Arrow
                     val rightInteraction = remember { MutableInteractionSource() }
                     val isRightPressed by rightInteraction.collectIsPressedAsState()
-                    val rightScale by animateFloatAsState(targetValue = if (isRightPressed) 0.85f else 1f, animationSpec = spring(stiffness = Spring.StiffnessLow), label = "rScale")
+                    val rightScale by animateFloatAsState(targetValue = if (isRightPressed) 0.85f else 1f, label = "rScale")
 
                     LaunchedEffect(isRightPressed) { onMoveRight(isRightPressed) }
 
@@ -159,29 +139,26 @@ fun HUDLayer(
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.cd_right_btn), tint = Color.White.copy(alpha=0.8f), modifier = Modifier.size(48.dp))
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(Res.string.cd_right_btn), tint = Color.White.copy(alpha=0.8f), modifier = Modifier.size(48.dp))
                     }
                 }
             }
 
-            // Jump Button (Bottom Right)
-            val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState()
-            val jumpScale by animateFloatAsState(targetValue = if (isPressed) 0.85f else 1f, animationSpec = spring(stiffness = Spring.StiffnessLow), label = "jsScale")
+            // Jump Button
+            val jumpInteraction = remember { MutableInteractionSource() }
+            val isJumpPressed by jumpInteraction.collectIsPressedAsState()
+            val jumpScale by animateFloatAsState(targetValue = if (isJumpPressed) 0.85f else 1f, label = "jsScale")
             
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(32.dp)
-                    .size(88.dp) // Zıplama en büyüğü
+                    .size(88.dp)
                     .graphicsLayer { scaleX = jumpScale; scaleY = jumpScale }
                     .clip(CircleShape)
                     .background(Color.Black.copy(alpha=0.4f))
                     .border(2.dp, Color.White.copy(alpha=0.2f), CircleShape)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null
-                    ) { 
+                    .clickable(interactionSource = jumpInteraction, indication = null) { 
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onJump() 
                     },
@@ -189,7 +166,7 @@ fun HUDLayer(
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = stringResource(R.string.cd_jump_btn),
+                    contentDescription = stringResource(Res.string.cd_jump_btn),
                     tint = Color.White.copy(alpha=0.8f),
                     modifier = Modifier.size(56.dp)
                 )
@@ -201,9 +178,9 @@ fun HUDLayer(
 @Composable
 fun StatCapsule(icon: androidx.compose.ui.graphics.vector.ImageVector, value: String, color: Color) {
     Surface(
-        color = Color.Black.copy(alpha = 0.5f), // Koyu ve okunaklı
+        color = Color.Black.copy(alpha = 0.5f),
         shape = RoundedCornerShape(24.dp),
-        border = androidx.compose.foundation.BorderStroke(2.dp, color.copy(alpha = 0.6f)), // Juicy border
+        border = androidx.compose.foundation.BorderStroke(2.dp, color.copy(alpha = 0.6f)),
         modifier = Modifier.height(44.dp)
     ) {
         Row(
@@ -215,11 +192,8 @@ fun StatCapsule(icon: androidx.compose.ui.graphics.vector.ImageVector, value: St
             Text(
                 text = value,
                 color = Color.White,
-                fontWeight = FontWeight.ExtraBold, // Daha dolgun font
-                fontSize = 18.sp,
-                style = androidx.compose.ui.text.TextStyle(
-                    shadow = Shadow(Color.Black.copy(alpha = 0.5f), blurRadius = 4f)
-                )
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 18.sp
             )
         }
     }

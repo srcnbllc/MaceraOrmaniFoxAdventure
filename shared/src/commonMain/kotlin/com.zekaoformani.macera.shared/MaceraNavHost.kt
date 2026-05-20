@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -26,11 +25,10 @@ fun MaceraNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Screen.MainMenu.route
 ) {
-    // KMP uyumlu instantiate
     val prefs = remember { GamePreferences() }
     val dataManager = remember { DataManager() }
 
-    val gameViewModel: GameViewModel = viewModel(factory = GameViewModelFactory(prefs))
+    val gameViewModel: GameViewModel = remember { GameViewModel(prefs) }
 
     // Ayarlar State'leri
     var showSettings by remember { mutableStateOf(false) }
@@ -51,7 +49,6 @@ fun MaceraNavHost(
     ) {
 
         // 1. ANA MENÜ
-        // 1. ANA MENÜ
         composable(Screen.MainMenu.route) {
             MainMenuScreen(
                 onNavigateToCharacterSelection = {
@@ -61,7 +58,6 @@ fun MaceraNavHost(
                 onNavigateToLeaderboard = { navController.navigate(Screen.Leaderboard.route) },
                 onNavigateToBadges = { navController.navigate(Screen.BadgePool.route) },
                 onOpenSettings = { showSettings = true },
-                // YENİ EKLENEN SATIR BURASI:
                 onNavigateToCamp = { navController.navigate("camp_screen") }
             )
         }
@@ -117,7 +113,6 @@ fun MaceraNavHost(
         composable(Screen.Leaderboard.route) {
             LeaderboardScreen(
                 playerScore = totalScore,
-                // T tipini burada açıkça belirtiyoruz:
                 perLevelBest = emptyList<Triple<Int, Int, Int>>(),
                 onNavigateBack = { navController.popBackStack() }
             )
@@ -126,19 +121,16 @@ fun MaceraNavHost(
         // 6. ROZETLER
         composable(Screen.BadgePool.route) {
             BadgePoolScreen(
-                badges = prefs.getBadges(),
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         // KAMP EKRANI
-        // KAMP EKRANI
         composable("camp_screen") {
             CampScreen(
                 gamePrefs = prefs,
-                dataManager = dataManager, // EKLENDİ: Ekran doğrudan buraya erişecek
+                dataManager = dataManager,
                 onSpendCoins = { amount ->
-                    // Harcama işlemi direkt DataManager'ın orijinal sistemi üzerinden yapılacak
                     dataManager.spendCoins(amount)
                 },
                 onNavigateBack = { navController.popBackStack() }

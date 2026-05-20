@@ -44,6 +44,13 @@ class GamePreferences(private val settings: Settings = Settings()) {
         _unlockedChaptersFlow.value = getUnlockedChaptersList()
     }
 
+    fun unlockChapter(chapter: Int) {
+        val currentMax = getUnlockedChapter()
+        if (chapter > currentMax) {
+            setUnlockedChapter(chapter)
+        }
+    }
+
     fun setSelectedCharacter(charId: Int) {
         settings["selected_character"] = charId
         _selectedCharacterFlow.value = charId
@@ -59,5 +66,44 @@ class GamePreferences(private val settings: Settings = Settings()) {
     private fun getUnlockedChaptersList(): List<Int> {
         val max = getUnlockedChapter()
         return (1..max).toList()
+    }
+
+    // --- Kamp Geliştirmeleri ---
+    fun getTentLevel(): Int = settings.getInt("tent_level", 0)
+    fun setTentLevel(level: Int) { settings["tent_level"] = level }
+
+    fun getCampfireLevel(): Int = settings.getInt("campfire_level", 0)
+    fun setCampfireLevel(level: Int) { settings["campfire_level"] = level }
+
+    fun getDummyLevel(): Int = settings.getInt("dummy_level", 0)
+    fun setDummyLevel(level: Int) { settings["dummy_level"] = level }
+
+    // --- Skor Sistemi ---
+    fun getHighScore(): Int = settings.getInt("high_score", 0)
+    fun saveHighScore(score: Int) {
+        val current = getHighScore()
+        if (score > current) {
+            settings["high_score"] = score
+        }
+    }
+
+    fun saveLastScore(score: Int) {
+        settings["last_score"] = score
+        updateScore(score) // Toplam skoru da güncelle
+    }
+
+    fun getLastScores(): List<Int> {
+        // Basitlik için şimdilik sadece son skoru dönelim
+        return listOf(settings.getInt("last_score", 0))
+    }
+
+    // --- Karakter Kilit Sistemi ---
+    fun isCharacterUnlocked(charId: Int): Boolean {
+        if (charId == 1) return true // Tilki her zaman açık
+        return settings.getBoolean("char_unlocked_$charId", false)
+    }
+
+    fun unlockCharacter(charId: Int) {
+        settings["char_unlocked_$charId"] = true
     }
 }

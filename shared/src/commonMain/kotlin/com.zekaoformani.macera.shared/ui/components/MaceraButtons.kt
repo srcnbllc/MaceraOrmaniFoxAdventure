@@ -24,13 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.core.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import com.zekaoformani.macera.ui.theme.Primary
-import com.zekaoformani.macera.ui.theme.SecondaryColor
+import com.zekaoformani.macera.ui.theme.LuminousPrimary
+import com.zekaoformani.macera.ui.theme.LuminousPrimaryContainer
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MaceraButton(
@@ -40,17 +41,17 @@ fun MaceraButton(
     colors: List<Color> = listOf(Color(0xFFFF8C00), Color(0xFFFF6F00)),
     borderColor: Color = Color(0xFF8C4A00),
     icon: ImageVector? = null,
-    iconRes: Int? = null,
+    iconRes: DrawableResource? = null,
     isCircular: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val pulseScale by androidx.compose.animation.core.animateFloatAsState(
+    val pulseScale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = androidx.compose.animation.core.spring(
-            dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
-            stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         ),
         label = "pulseAnim"
     )
@@ -69,7 +70,7 @@ fun MaceraButton(
             .background(Brush.verticalGradient(colors.map { it.copy(alpha = 0.85f) }))
             .border(
                 width = 1.dp,
-                color = Color.White.copy(alpha = if (isPressed) 0.05f else 0.15f), // Ghost border
+                color = Color.White.copy(alpha = if (isPressed) 0.05f else 0.15f),
                 shape = shape
             )
             .clickable(
@@ -99,7 +100,7 @@ fun MaceraButton(
                     )
                 } else if (iconRes != null) {
                     androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(id = iconRes),
+                        painter = painterResource(iconRes),
                         contentDescription = null,
                         modifier = Modifier.size(if (isCircular) 48.dp else 24.dp).clip(CircleShape),
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop
@@ -123,13 +124,13 @@ fun MaceraButton(
 
 @Composable
 fun BtnPlay(text: String = "OYNA", onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "playBtnGlow")
+    val infiniteTransition = rememberInfiniteTransition(label = "playBtnGlow")
     val glowRadius by infiniteTransition.animateFloat(
         initialValue = 8f,
         targetValue = 20f,
-        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-            animation = androidx.compose.animation.core.tween(1200, easing = androidx.compose.animation.core.EaseInOutSine),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse
         ),
         label = "glowAnim"
     )
@@ -143,10 +144,10 @@ fun BtnPlay(text: String = "OYNA", onClick: () -> Unit, modifier: Modifier = Mod
             .shadow(
                 elevation = glowRadius.dp,
                 shape = RoundedCornerShape(32.dp),
-                spotColor = Color(0xFFFFD700), // Amber/Gold parlama
+                spotColor = Color(0xFFFFD700),
                 ambientColor = Color(0xFFFFC107)
             ),
-        colors = listOf(com.zekaoformani.macera.ui.theme.LuminousPrimary, com.zekaoformani.macera.ui.theme.LuminousPrimaryContainer),
+        colors = listOf(LuminousPrimary, LuminousPrimaryContainer),
         borderColor = Color.Transparent
     )
 }
@@ -159,7 +160,7 @@ fun BtnBack(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier.size(56.dp),
         colors = listOf(Color(0xFF4CAF50), Color(0xFF388E3C)),
         borderColor = Color(0xFF1B5E20),
-        icon = androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
+        icon = Icons.AutoMirrored.Filled.ArrowBack,
         isCircular = true
     )
 }
@@ -172,7 +173,7 @@ fun BtnCancel(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier.size(56.dp),
         colors = listOf(Color(0xFFFF4500), Color(0xFFD84315)),
         borderColor = Color(0xFFBF360C),
-        icon = androidx.compose.material.icons.Icons.Default.Close,
+        icon = Icons.Default.Close,
         isCircular = true
     )
 }
@@ -189,12 +190,12 @@ fun BtnGeneric(text: String, onClick: () -> Unit, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun IconButtonCircular(iconRes: Int? = null, iconVector: ImageVector? = null, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun IconButtonCircular(iconRes: DrawableResource? = null, iconVector: ImageVector? = null, onClick: () -> Unit, modifier: Modifier = Modifier) {
     MaceraButton(
         text = "",
         onClick = onClick,
         modifier = modifier.size(72.dp),
-        colors = listOf(Color(0xFF2F4F4F), Color(0xFF1A3333)), // Deep Slate
+        colors = listOf(Color(0xFF2F4F4F), Color(0xFF1A3333)),
         borderColor = Color(0xFF0F1F1F),
         icon = iconVector,
         iconRes = iconRes,

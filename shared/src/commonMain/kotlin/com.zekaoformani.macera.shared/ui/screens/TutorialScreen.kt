@@ -19,31 +19,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import coil3.compose.AsyncImage
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun TutorialScreen(
-    characterId: Int = 1, // NavHost bağlantısı bozulmasın diye tutuyoruz
+    characterId: Int = 1,
     onComplete: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Box(modifier = Modifier.fillMaxSize()) {
 
         // --- ARKA PLAN ---
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(R.drawable.menu_arkaplan) // Ana menüdeki resmi kullanıyoruz
-                .build(),
+            model = Res.drawable.menu_arkaplan,
             contentDescription = "Eğitim Arkaplanı",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -97,7 +92,7 @@ fun TutorialScreen(
                 // ALTIN TOPLAMA
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     Image(
-                        painter = painterResource(id = R.drawable.item_coin),
+                        painter = painterResource(Res.drawable.item_coin),
                         contentDescription = "Altın",
                         modifier = Modifier.size(48.dp)
                     )

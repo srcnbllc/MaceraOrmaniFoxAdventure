@@ -18,20 +18,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.zekaoformani.macera.R
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import coil3.compose.AsyncImage
 import com.zekaoformani.macera.data.DataManager
 import com.zekaoformani.macera.data.SoundManager
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MainMenuScreen(
@@ -42,29 +41,22 @@ fun MainMenuScreen(
     onOpenSettings: () -> Unit,
     onNavigateToCamp: () -> Unit
 ) {
-    val context = LocalContext.current
-    val dataManager = remember { DataManager(context) }
-
-    // --- SES VE YAŞAM DÖNGÜSÜ YÖNETİMİ EKLENDİ ---
-    val soundManager = remember { SoundManager.getInstance(context) }
+    val dataManager = remember { DataManager() }
+    val soundManager = remember { SoundManager.getInstance() }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var totalCoins by remember { mutableIntStateOf(0) }
     var highScore by remember { mutableIntStateOf(0) }
 
-    // Ekran her yüklendiğinde kasa verilerini güncelle
     LaunchedEffect(Unit) {
         totalCoins = dataManager.getTotalCoins()
         highScore = dataManager.getHighScore()
     }
 
-    // --- MÜZİK KONTROL BEKÇİSİ ---
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                // Ekrana dönüldüğünde veya kilit açıldığında müziği başlat
-                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic(R.raw.orman_muzigi)
-                // Ekran kapandığında veya başka sayfaya geçildiğinde durdur
+                Lifecycle.Event.ON_RESUME -> soundManager.playBackgroundMusic("orman_muzigi")
                 Lifecycle.Event.ON_PAUSE -> soundManager.stopBackgroundMusic()
                 else -> {}
             }
@@ -78,9 +70,7 @@ fun MainMenuScreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(R.drawable.menu_arkaplan)
-                .build(),
+            model = Res.drawable.menu_arkaplan,
             contentDescription = "Ana Menü Arkaplanı",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -107,7 +97,7 @@ fun MainMenuScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.item_coin),
+                painter = painterResource(Res.drawable.item_coin),
                 contentDescription = "Toplam Altın",
                 modifier = Modifier.size(28.dp)
             )
@@ -156,10 +146,9 @@ fun MainMenuScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // KAMP BUTONU DÜZELTİLDİ (Artık diğerleriyle aynı tasarımda)
             WoodenMenuButton(
                 text = "Gelişim Vadisi",
-                icon = Icons.Default.LocalFireDepartment, // Kamp ateşi ikonu
+                icon = Icons.Default.LocalFireDepartment,
                 onClick = onNavigateToCamp,
                 isBig = true
             )

@@ -1,18 +1,19 @@
 package com.zekaoformani.macera.data.models
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import com.zekaoformani.macera.R
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import maceraormanifoxadventure.shared.generated.resources.Res
+import maceraormanifoxadventure.shared.generated.resources.*
 
 /**
  * Oyundaki seçilebilir karakterlerin temel yetenek ve görsel referanslarını tutar.
  */
 data class HeroData(
     val id: Int,
-    @field:StringRes val nameRes: Int,
-    @field:StringRes val descRes: Int,
-    @field:DrawableRes val imageRes: Int,
-    @field:DrawableRes val arcadeBadgeRes: Int,
+    val nameRes: StringResource,
+    val descRes: StringResource,
+    val imageRes: DrawableResource,
+    val arcadeBadgeRes: DrawableResource,
     val speedStars: Int,
     val jumpStars: Int,
     val durabilityStars: Int,
@@ -26,10 +27,10 @@ val characters = listOf(
     // 🦊 SWIFT FOX
     HeroData(
         id = 1,
-        nameRes = R.string.char_fox_name,
-        descRes = R.string.char_fox_desc,
-        imageRes = R.drawable.fox,
-        arcadeBadgeRes = R.drawable.fox,
+        nameRes = Res.string.char_fox_name,
+        descRes = Res.string.char_fox_desc,
+        imageRes = Res.drawable.fox,
+        arcadeBadgeRes = Res.drawable.fox,
         speedStars = 4,
         jumpStars = 3,
         durabilityStars = 2,
@@ -39,10 +40,10 @@ val characters = listOf(
     // 🐒 CRAZY MONKEY
     HeroData(
         id = 2,
-        nameRes = R.string.char_monkey_name,
-        descRes = R.string.char_monkey_desc,
-        imageRes = R.drawable.monkey,
-        arcadeBadgeRes = R.drawable.monkey,
+        nameRes = Res.string.char_monkey_name,
+        descRes = Res.string.char_monkey_desc,
+        imageRes = Res.drawable.monkey,
+        arcadeBadgeRes = Res.drawable.monkey,
         speedStars = 5,
         jumpStars = 5,
         durabilityStars = 1,
@@ -52,10 +53,10 @@ val characters = listOf(
     // 🐯 WILD TIGER
     HeroData(
         id = 3,
-        nameRes = R.string.char_tiger_name,
-        descRes = R.string.char_tiger_desc,
-        imageRes = R.drawable.tigger,
-        arcadeBadgeRes = R.drawable.tigger,
+        nameRes = Res.string.char_tiger_name,
+        descRes = Res.string.char_tiger_desc,
+        imageRes = Res.drawable.tigger,
+        arcadeBadgeRes = Res.drawable.tigger,
         speedStars = 4,
         jumpStars = 2,
         durabilityStars = 5,

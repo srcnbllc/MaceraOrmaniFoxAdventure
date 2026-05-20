@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
+import kotlin.math.PI
+import kotlin.math.sin
 import kotlin.random.Random
 
 data class Particle(
@@ -29,7 +31,7 @@ fun LeafParticleSystem(modifier: Modifier = Modifier) {
                 speed = Random.nextFloat() * 2f + 1f,
                 radius = Random.nextFloat() * 6f + 3f,
                 alpha = Random.nextFloat() * 0.4f + 0.1f,
-                angle = Random.nextFloat() * 2 * Math.PI.toFloat(),
+                angle = Random.nextFloat() * 2 * PI.toFloat(),
                 swaySpeed = Random.nextFloat() * 0.05f + 0.01f
             )
         }
@@ -48,19 +50,17 @@ fun LeafParticleSystem(modifier: Modifier = Modifier) {
         val width = size.width
         val height = size.height
         
-        // This read of `ticks` forces recomposition.
         if (ticks > 0) {
             particles.forEach { p ->
                 p.y += p.speed
                 p.angle += p.swaySpeed
-                p.x += kotlin.math.sin(p.angle) * 1f
+                p.x += sin(p.angle) * 1f
 
                 if (p.y > height + p.radius) {
                     p.y = -p.radius
                     p.x = Random.nextFloat() * width
                 }
                 
-                // Opaque glowing leaves (Forest Green / Amber mixed)
                 val isAmber = p.radius > 6f
                 val baseColor = if (isAmber) Color(0xFFFFCC80) else Color(0xFFA5D6A7)
                 

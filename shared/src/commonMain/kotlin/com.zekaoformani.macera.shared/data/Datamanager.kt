@@ -32,4 +32,12 @@ class DataManager(private val settings: Settings = Settings()) {
         }
         return false
     }
+
+    // --- BadgePoolScreen için gerekenler ---
+    fun getHighScore(): Int = settings.getInt("high_score", 0)
+
+    fun isCharacterUnlocked(charId: Int): Boolean {
+        if (charId == 1) return true
+        return settings.getBoolean("char_unlocked_$charId", false)
+    }
 }
