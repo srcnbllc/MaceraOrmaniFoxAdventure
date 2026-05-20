@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Macera Ormanı</string>
+
+    <!-- Ana Menü -->
+    <string name="btn_play">OYNA</string>
+    <string name="btn_settings">Ayarlar</string>
+    <string name="btn_leaderboard">Skor Tablosu</string>
+    <string name="title_adventure">MACERA</string>
+    <string name="title_forest">ORMANI</string>
+    <string name="cd_forest_bg">Orman arka planı</string>
+    <string name="cd_fox_mascot">Macera Tilkisi</string>
+    <string name="lbl_your_score">Senin skorun</string>
+    <string name="cd_profile_score">Toplam puanın</string>
+    <string name="lbl_tap_to_play_level">Oynamak için dokun!</string>
+    <string name="btn_badges">Rozetler</string>
+    <string name="title_badges">ROZETLER</string>
+    <string name="lbl_no_badges_yet">Henüz rozet yok. Bölüm bitirince kazanacaksın!</string>
+
+    <!-- Tutorial -->
+    <string name="btn_skip">⏩  ATLA</string>
+    <string name="btn_start_play">ANLADIM, BAŞLA!</string>
+    <string name="tutorial_tap_label">Zıplamak için</string>
+    <string name="tutorial_tap_action">DOKUN! 👆</string>
+    <string name="tutorial_description">Engelleri aşmak için ekrana bas,\nküçük dostu ormanın karşısına geçir!</string>
+    <string name="tutorial_instruction_tap">Ekrana Bas!</string>
+    <string name="tutorial_instruction_success">Harika! %d/3</string>
+
+    <!-- Karakter Seçim -->
+    <string name="title_choose_hero">KAHRAMANINI SEÇ</string>
+    <string name="btn_start_adventure">MACERAYA BAŞLA</string>
+    <string name="lbl_speed">🏃 HIZ</string>
+    <string name="lbl_jump">🚀 ZIPLAMA</string>
+    <string name="lbl_durability">🛡️ DAYANIKLILIK</string>
+    <string name="cd_prev_char">Önceki karakter</string>
+    <string name="cd_next_char">Sonraki karakter</string>
+
+    <!-- Karakterler -->
+    <string name="char_fox_name">HIZLI TİLKİ</string>
+    <string name="char_fox_desc">Dengeli ve kurnaz. Ormanın her köşesini bilir!</string>
+    <string name="char_monkey_name">CRAZY MONKEY</string>
+    <string name="char_monkey_desc">Çevik ve çılgın! Herkesten daha yükseğe zıplar.</string>
+
+    <string name="char_tiger_name">WILD TIGER</string>
+    <string name="char_tiger_desc">Korkusuz ve güçlü! Karşısına çıkan engelleri rahatça parçalar.</string>
+    <!-- Bölüm Seçim & Dünyalar -->
+    <string name="title_chapter_select">MACERA HARİTASI</string>
+    <string name="world_1_name">DÜNYA 1: ORMAN</string>
+    <string name="world_2_name">DÜNYA 2: KUMSAL</string>
+    <string name="world_3_name">DÜNYA 3: GÖKYÜZÜ</string>
+    <string name="world_4_name">DÜNYA 4: KRİSTAL MAĞARA</string>
+
+    <string name="level_1_name">Başlangıç Patikası</string>
+    <string name="level_2_name">Sık Sarmaşıklar</string>
+    <string name="level_3_name">Şelale Yolu</string>
+    <string name="level_4_name">Altın Sahil</string>
+    <string name="level_5_name">Mağara Kıyısı</string>
+    <string name="level_6_name">Bulut Süzülüşü</string>
+    <string name="level_7_name">Fırtınalı Rüzgar</string>
+    <string name="level_8_name">Kristal Tüneller</string>
+    <string name="level_9_name">Işıltılı Galeri</string>
+    <string name="level_10_name">Renklerin Kalbi</string>
+
+    <!-- Oyun İçi HUD -->
+    <string name="hud_chapter">BÖLÜM %d</string>
+    <string name="hud_score">PUAN: %d</string>
+    <string name="cd_jump_btn">Zıpla</string>
+    <string name="cd_left_btn">Sola Git</string>
+    <string name="cd_right_btn">Sağa Git</string>
+    <string name="cd_back_btn">Geri</string>
+    <string name="cd_pause_btn">Duraklat</string>
+    <string name="pause_title">DURAKLATILDI</string>
+    <string name="btn_resume">DEVAM ET</string>
+
+    <!-- Oyun Sonu -->
+    <string name="game_over_title">EYVAH!</string>
+    <string name="game_over_subtitle">Ormanda kayboldun…</string>
+    <string name="btn_retry">TEKRAR DENE</string>
+    <string name="btn_main_menu">ANA MENÜ</string>
+
+    <!-- Bölüm Tamamlama -->
+    <string name="level_complete_title">BÖLÜM TAMAMLANDI!</string>
+    <string name="victory_title">ZAFER!</string>
+    <string name="lbl_chapter_score">BÖLÜM PUANI</string>
+    <string name="lbl_total_score">TOPLAM SKOR:</string>
+    <string name="lbl_stars_collected">YILDIZ:</string>
+    <string name="btn_continue">DEVAM ET</string>
+    <string name="btn_replay">YENİDEN OYNA</string>
+    <string name="btn_next_level">SIRADAKİ BÖLÜM</string>
+    <string name="btn_map">HARİTAYA DÖN</string>
+    <string name="lbl_locked">Kilitli</string>
+
+    <!-- Skor Tablosu -->
+    <string name="title_leaderboard">Lider Tablosu</string>
+    <string name="filter_general">Genel</string>
+    <string name="filter_school">Okul</string>
+    <string name="filter_friends">Arkadaşlar</string>
+    <string name="lbl_ranking">SIRALAMA</string>
+    <string name="lbl_score">PUAN</string>
+
+    <!-- Ayarlar -->
+    <string name="title_settings">AYARLAR</string>
+    <string name="setting_music">Müzik</string>
+    <string name="setting_sfx">Ses Efektleri</string>
+    <string name="setting_parental">Ebeveyn Kilidi</string>
+    <string name="setting_parental_sub">Ayarları yönet</string>
+</resources>

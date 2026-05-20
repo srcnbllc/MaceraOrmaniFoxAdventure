@@ -29,10 +29,21 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            // KMP Navigation
+            implementation(libs.jetbrains.navigation.compose)
+
+            // KMP Coil 3
+            implementation(libs.coil.compose)
+            implementation(libs.coil.gif)
+
+            // Settings
+            implementation(libs.multiplatformSettingsNoArg)
         }
-        
+
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
+            implementation(libs.coil.network.okhttp)
         }
     }
 }
