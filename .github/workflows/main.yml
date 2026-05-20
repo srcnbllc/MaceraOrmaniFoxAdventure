@@ -2,7 +2,7 @@ name: iOS Bulut Derleme Testi (0 Maliyet)
 
 on:
   push:
-    branches: [ main ] # Sen main dâlına kod pushladığında otomatik çalışır
+    branches: ["ios-deneme-branch"] # Sen main dâlına kod pushladığında otomatik çalışır
 
 jobs:
   build-ios:
