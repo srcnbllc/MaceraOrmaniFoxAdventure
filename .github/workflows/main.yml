@@ -26,7 +26,7 @@ jobs:
 
       # 1. Aşama: Derlemeyi dene
       - name: iOS Framework Derlemesini Başlat
-        run: ./gradlew :shared:assembleDebugFrameworkIosArm64 || ./gradlew :shared:assembleDebugFrameworkIosX64
+        run: ./gradlew :shared:linkDebugFrameworkIosX64
 
       # 2. Aşama: Eğer üstteki komut başarısız olursa, görev isimlerini listele (Debug için)
       - name: Görev İsimlerini Listele (Hata Alırsan Buraya Bak)
