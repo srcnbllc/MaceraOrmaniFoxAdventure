@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,7 +15,6 @@ import com.zekaoformani.macera.data.GamePreferences
 import com.zekaoformani.macera.ui.screens.*
 import com.zekaoformani.macera.ui.components.SettingsOverlay
 import com.zekaoformani.macera.ui.viewmodel.GameViewModel
-import com.zekaoformani.macera.ui.viewmodel.GameViewModelFactory
 import com.zekaoformani.macera.data.DataManager
 
 @Composable

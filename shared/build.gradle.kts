@@ -27,18 +27,21 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(libs.androidx.material.icons.extended)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            // KMP Navigation
+            // Anayasa Madde 1: JetBrains KMP Ports
             implementation(libs.jetbrains.navigation.compose)
+            implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+            implementation(libs.jetbrains.lifecycle.runtime.compose)
 
-            // KMP Coil 3
+            // Anayasa Madde 1: KMP Utilities
+            implementation(libs.multiplatform.settings.no.arg)
+
+            // Anayasa Madde 1: Coil 3 Multiplatform
             implementation(libs.coil.compose)
             implementation(libs.coil.gif)
-
-            // Settings
-            implementation(libs.multiplatformSettingsNoArg)
         }
 
         androidMain.dependencies {
